@@ -41,7 +41,6 @@ class _GameScreenState extends State<GameScreen> {
         _currentWord != null &&
         !_currentWord!.letters.contains(Letter.empty())) {
       _gameStatus = GameStatus.submiting;
-      print('');
 
       for (int i = 0; i < _currentWord!.letters.length; i++) {
         final currentWordLetter = _currentWord!.letters[i];
