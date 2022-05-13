@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:vi_word/models/letter.dart';
-import 'package:vi_word/models/word.dart';
-import 'package:vi_word/modules/game.dart';
-import 'package:vi_word/utils/constants.dart';
-import 'package:vi_word/widgets/board.dart';
-import 'package:vi_word/widgets/keyboard.dart';
+import 'package:vi_word/models/models.dart';
+import 'package:vi_word/utils/colors.dart';
+import 'package:vi_word/utils/constants.dart' as constants;
+import 'package:vi_word/utils/show_snack_bar.dart';
+import 'package:vi_word/widgets/accent_box.dart';
+import 'package:vi_word/widgets/widgets.dart';
 
 enum GameStatus { playing, won, lost, submiting }
 
@@ -16,7 +16,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  List<Word> _board = Game.initBoard;
+  final List<Word> _board = constants.initBoard;
   int _currentIndex = 0;
   GameStatus _gameStatus = GameStatus.playing;
 
@@ -24,10 +24,24 @@ class _GameScreenState extends State<GameScreen> {
       _currentIndex < _board.length ? _board[_currentIndex] : null;
   String get _solution => 'conheo';
 
+  final Set<Letter> specialKeys = {};
+
   void onKeyTap(String val) {
     if (_gameStatus == GameStatus.playing) {
       setState(() => _currentWord?.addLetter(val));
     }
+  }
+
+  void onLimitedKeyTap(String key) {
+    showSnackBar(
+      context: context,
+      backgroundColor: red,
+      text: 'Chữ $key không có trong Tiếng Việt !',
+    );
+  }
+
+  void onAccentTap(String key) {
+    print('$key tapped');
   }
 
   void onDeleteTap() {
@@ -37,30 +51,34 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void onEnterTap() {
+    showSnackBar(
+      context: context,
+      backgroundColor: red,
+      text: 'enter',
+    );
     if (_gameStatus == GameStatus.playing &&
         _currentWord != null &&
-        !_currentWord!.letters.contains(Letter.empty())) {
+        _currentWord!.letters.every((e) => e.val != '')) {
+      // prevent spam enter
       _gameStatus = GameStatus.submiting;
 
-      for (int i = 0; i < _currentWord!.letters.length; i++) {
-        final currentWordLetter = _currentWord!.letters[i];
-        final currentSolutionLetter = _solution[i];
-
-        if (currentWordLetter.val == currentSolutionLetter) {
-          currentWordLetter.copyWith(status: LetterStatus.correct);
-        } else if (_solution.contains(currentWordLetter.val)) {
-          currentWordLetter.copyWith(status: LetterStatus.wrongPosition);
-        } else {
-          currentWordLetter.copyWith(status: LetterStatus.notInWord);
-        }
-      }
       setState(() {
-        _currentIndex = _currentIndex + 1;
+        _currentWord!.validate(_solution, updateKeyboard);
+
         _gameStatus = GameStatus.playing;
-        _board = [
-          Word(letters: [Letter.empty()])
-        ];
+        _currentIndex++;
       });
+    }
+  }
+
+  void updateKeyboard(Letter enteredLetter) {
+    final keyToUpdate = specialKeys.firstWhere(
+        (e) => e.val == enteredLetter.val,
+        orElse: () => Letter.empty());
+
+    if (keyToUpdate.status != LetterStatus.correct) {
+      specialKeys.removeWhere((e) => e.val == enteredLetter.val);
+      specialKeys.add(enteredLetter);
     }
   }
 
@@ -70,22 +88,31 @@ class _GameScreenState extends State<GameScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        title: const Text(appName),
+        title: const Text(constants.appName),
         centerTitle: true,
-        titleTextStyle: Theme.of(context).textTheme.headline4!.copyWith(
-              letterSpacing: 4,
-              fontWeight: FontWeight.bold,
-            ),
+        titleTextStyle: const TextStyle(
+          letterSpacing: 4,
+          fontWeight: FontWeight.bold,
+          fontSize: 32,
+          color: Colors.white,
+        ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Board(board: _board),
-          const SizedBox(height: 24),
-          Keyboard(
-            onKeyTap: onKeyTap,
-            onEnterTap: onEnterTap,
-            onDeleteTap: onDeleteTap,
-          ),
+          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Board(board: _board),
+            const SizedBox(height: constants.defaultPadding),
+            Keyboard(
+              onKeyTap: onKeyTap,
+              onLimitedKeyTap: onLimitedKeyTap,
+              onAccentTap: onAccentTap,
+              onEnterTap: onEnterTap,
+              onDeleteTap: onDeleteTap,
+              specialKeys: specialKeys,
+            ),
+            const SizedBox(height: constants.defaultPadding / 2),
+          ]),
+          const AccentBox(),
         ],
       ),
     );

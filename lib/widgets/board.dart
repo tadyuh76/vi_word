@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vi_word/models/word.dart';
+import 'package:vi_word/models/models.dart';
 import 'package:vi_word/widgets/board_tile.dart';
 
 class Board extends StatelessWidget {
@@ -12,8 +12,8 @@ class Board extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: board
           .map(
             (word) => Row(

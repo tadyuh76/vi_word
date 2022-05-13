@@ -1,4 +1,4 @@
-import 'package:vi_word/models/letter.dart';
+import 'package:vi_word/models/models.dart';
 
 class Word {
   final List<Letter> letters;
@@ -23,6 +23,23 @@ class Word {
         letters.lastIndexWhere((element) => element.val.isNotEmpty);
     if (lastLetterIndex != -1) {
       letters[lastLetterIndex] = Letter.empty();
+    }
+  }
+
+  void validate(String solution, void Function(Letter) callback) {
+    for (int i = 0; i < letters.length; i++) {
+      final currentWordLetter = letters[i];
+      final currentSolutionLetter = solution[i];
+
+      if (currentWordLetter.val == currentSolutionLetter) {
+        currentWordLetter.copyWith(status: LetterStatus.correct);
+      } else if (solution.contains(currentWordLetter.val)) {
+        currentWordLetter.copyWith(status: LetterStatus.wrongPosition);
+      } else {
+        currentWordLetter.copyWith(status: LetterStatus.notInWord);
+      }
+
+      callback(currentWordLetter);
     }
   }
 }

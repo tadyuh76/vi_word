@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
 
-const _enterKey = 'enter';
-const _delKey = 'del';
-
-var _keyRows = [
-  ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  [_delKey, 'z', 'x', 'c', 'v', 'b', 'n', 'm', _enterKey],
-];
-
 class Keyboard extends StatefulWidget {
-  final void Function(String) onKeyTap;
+  final void Function(String) onKeyTap, onAccentTap, onLimitedKeyTap;
   final VoidCallback onEnterTap, onDeleteTap;
+  final Set<Letter> specialKeys;
+
   const Keyboard({
     Key? key,
     required this.onKeyTap,
+    required this.onAccentTap,
+    required this.onLimitedKeyTap,
     required this.onEnterTap,
     required this.onDeleteTap,
+    required this.specialKeys,
   }) : super(key: key);
 
   @override
@@ -28,113 +25,124 @@ class Keyboard extends StatefulWidget {
 class _KeyboardState extends State<Keyboard> {
   @override
   Widget build(BuildContext context) {
-    final keyWidth = (MediaQuery.of(context).size.width - defaultPadding) /
-            _keyRows[0].length -
-        4;
+    final limitedKeys = {'w', 'f', 'j', 'z'};
+    final accentedKeys = {'a', 'e', 'i', 'o', 'u'};
 
-    return Positioned(
-      bottom: 0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-        child: Column(
-          children: _keyRows
-              .map(
-                (row) => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: row.map((key) {
-                    if (key == _enterKey) {
-                      return _KeyboardButton.enter(
-                        onTap: widget.onEnterTap,
-                        width: keyWidth * 1.5,
-                        height: keyWidth * 1.3,
-                      );
-                    } else if (key == _delKey) {
-                      return _KeyboardButton.delete(
-                        onTap: widget.onDeleteTap,
-                        width: keyWidth * 1.5,
-                        height: keyWidth * 1.3,
-                      );
-                    } else {
-                      return _KeyboardButton(
-                        keyVal: key,
-                        onTap: () => widget.onKeyTap(key),
-                        height: keyWidth * 1.3,
-                        width: keyWidth,
-                        backgroundColor: Colors.grey[600],
-                      );
-                    }
-                  }).toList(),
-                ),
-              )
-              .toList(),
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+      child: Column(
+        children: keyRows
+            .map(
+              (row) => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: row.map((key) {
+                  if (key == enterKey) {
+                    return _KeyboardButton.enter(onTap: widget.onEnterTap);
+                  }
+                  if (key == delKey) {
+                    return _KeyboardButton.delete(onTap: widget.onDeleteTap);
+                  }
+                  if (limitedKeys.contains(key)) {
+                    return _KeyboardButton.limitedKey(
+                      keyVal: key,
+                      onTap: () => widget.onLimitedKeyTap(key),
+                    );
+                  }
+                  if (accentedKeys.contains(key)) {
+                    return _KeyboardButton.accent(
+                      keyVal: key,
+                      onTap: () => widget.onAccentTap(key),
+                    );
+                  } else {
+                    Letter currentKey = widget.specialKeys.firstWhere(
+                      (e) => e.val == key,
+                      orElse: () => Letter.empty(),
+                    );
+                    return _KeyboardButton(
+                      keyVal: key,
+                      onTap: () => widget.onKeyTap(key),
+                      backgroundColor: currentKey.val == ''
+                          ? grey
+                          : currentKey.backgroundColor,
+                    );
+                  }
+                }).toList(),
+              ),
+            )
+            .toList(),
       ),
     );
   }
 }
 
 class _KeyboardButton extends StatelessWidget {
+  final IconData? icon;
+  final String keyVal;
   final VoidCallback onTap;
-  final double height;
-  final double width;
-  final String? keyVal;
-  final Color? backgroundColor;
-  final Icon? icon;
+  final Color backgroundColor;
 
   const _KeyboardButton({
     Key? key,
     this.icon,
-    this.keyVal,
-    required this.height,
-    required this.width,
+    this.backgroundColor = grey,
+    required this.keyVal,
     required this.onTap,
-    required this.backgroundColor,
   }) : super(key: key);
 
-  factory _KeyboardButton.enter({onTap, width, height}) {
+  factory _KeyboardButton.enter({onTap}) {
     return _KeyboardButton(
-      keyVal: _enterKey,
+      keyVal: enterKey,
       onTap: onTap,
-      width: width,
-      height: height,
-      backgroundColor: Colors.grey[600],
-      icon: const Icon(
-        Icons.arrow_right,
-        color: primary,
-        size: 36,
-      ),
+      icon: Icons.keyboard_double_arrow_right,
     );
   }
 
-  factory _KeyboardButton.delete({onTap, width, height}) {
+  factory _KeyboardButton.delete({onTap}) {
     return _KeyboardButton(
-      keyVal: _delKey,
+      keyVal: delKey,
       onTap: onTap,
-      width: width,
-      height: height,
-      backgroundColor: Colors.grey[600],
-      icon: const Icon(
-        Icons.delete,
-        color: red,
-        size: 36,
-      ),
+      icon: Icons.keyboard_return,
     );
+  }
+
+  factory _KeyboardButton.accent({keyVal, onTap}) {
+    return _KeyboardButton(keyVal: keyVal, onTap: onTap);
+  }
+
+  factory _KeyboardButton.limitedKey({keyVal, onTap}) {
+    return _KeyboardButton(keyVal: keyVal, onTap: onTap);
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: width,
-        height: height,
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.grey[600],
-          borderRadius: BorderRadius.circular(4),
+    final keyWidth = (MediaQuery.of(context).size.width - defaultPadding) /
+            keyRows[0].length -
+        4;
+    final bool isNotVietnamese = {'w', 'f', 'j', 'z'}.contains(keyVal);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+      child: Material(
+        color: isNotVietnamese ? Colors.grey[700] : backgroundColor,
+        borderRadius: BorderRadius.circular(4),
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            alignment: Alignment.center,
+            width:
+                [enterKey, delKey].contains(keyVal) ? 1.5 * keyWidth : keyWidth,
+            height: 1.3 * keyWidth,
+            child: icon != null
+                ? Icon(icon, size: 32)
+                : Text(
+                    keyVal,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+          ),
         ),
-        child: icon ?? Text(keyVal!),
       ),
     );
   }

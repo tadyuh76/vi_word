@@ -31,7 +31,7 @@ class Letter {
   Color get borderColor {
     switch (status) {
       case LetterStatus.initial:
-        return Colors.grey;
+        return Colors.grey[700]!;
       default:
         return Colors.transparent;
     }

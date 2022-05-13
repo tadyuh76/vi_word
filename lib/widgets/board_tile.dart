@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vi_word/models/letter.dart';
+import 'package:vi_word/models/models.dart';
 
 class BoardTile extends StatelessWidget {
   final Letter letter;
