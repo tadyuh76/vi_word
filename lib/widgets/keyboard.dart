@@ -4,14 +4,13 @@ import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
 
 class Keyboard extends StatefulWidget {
-  final void Function(String) onKeyTap, onAccentTap, onLimitedKeyTap;
+  final void Function(String) onKeyTap, onLimitedKeyTap;
   final VoidCallback onEnterTap, onDeleteTap;
   final Set<Letter> specialKeys;
 
   const Keyboard({
     Key? key,
     required this.onKeyTap,
-    required this.onAccentTap,
     required this.onLimitedKeyTap,
     required this.onEnterTap,
     required this.onDeleteTap,
@@ -26,7 +25,6 @@ class _KeyboardState extends State<Keyboard> {
   @override
   Widget build(BuildContext context) {
     final limitedKeys = {'w', 'f', 'j', 'z'};
-    final accentedKeys = {'a', 'e', 'i', 'o', 'u'};
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
@@ -36,6 +34,11 @@ class _KeyboardState extends State<Keyboard> {
               (row) => Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: row.map((key) {
+                  Letter currentKey = widget.specialKeys.firstWhere(
+                    (e) => e.val == key,
+                    orElse: () => Letter.empty(),
+                  );
+
                   if (key == enterKey) {
                     return _KeyboardButton.enter(onTap: widget.onEnterTap);
                   }
@@ -47,17 +50,7 @@ class _KeyboardState extends State<Keyboard> {
                       keyVal: key,
                       onTap: () => widget.onLimitedKeyTap(key),
                     );
-                  }
-                  if (accentedKeys.contains(key)) {
-                    return _KeyboardButton.accent(
-                      keyVal: key,
-                      onTap: () => widget.onAccentTap(key),
-                    );
                   } else {
-                    Letter currentKey = widget.specialKeys.firstWhere(
-                      (e) => e.val == key,
-                      orElse: () => Letter.empty(),
-                    );
                     return _KeyboardButton(
                       keyVal: key,
                       onTap: () => widget.onKeyTap(key),
@@ -103,10 +96,6 @@ class _KeyboardButton extends StatelessWidget {
       onTap: onTap,
       icon: Icons.keyboard_return,
     );
-  }
-
-  factory _KeyboardButton.accent({keyVal, onTap}) {
-    return _KeyboardButton(keyVal: keyVal, onTap: onTap);
   }
 
   factory _KeyboardButton.limitedKey({keyVal, onTap}) {

@@ -37,8 +37,15 @@ class Letter {
     }
   }
 
-  void copyWith({String? val, LetterStatus? status}) {
+  Letter copyWith({String? val, LetterStatus? status}) {
     this.val = val ?? this.val;
     this.status = status ?? this.status;
+
+    return this;
+  }
+
+  @override
+  String toString() {
+    return "{val: $val, status: $status}";
   }
 }
