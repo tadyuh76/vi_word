@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:vi_word/models/models.dart';
+import 'package:vi_word/models/letter.dart';
+import 'package:vi_word/models/word.dart';
+import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart' as constants;
 import 'package:vi_word/utils/remove_diacritics.dart';
 import 'package:vi_word/utils/show_snack_bar.dart';
 import 'package:vi_word/widgets/accent_box.dart';
-import 'package:vi_word/widgets/widgets.dart';
+import 'package:vi_word/widgets/board.dart';
+import 'package:vi_word/widgets/keyboard.dart';
 
 enum GameStatus { playing, won, lost, submiting }
 
@@ -32,6 +35,8 @@ class _GameScreenState extends State<GameScreen> {
     if (_gameStatus == GameStatus.playing) {
       setState(() {
         bool? added = _currentWord?.addLetter(val);
+
+        // if the key can has accent
         if (constants.keyWithAccents.keys.contains(val)) {
           accentBoxVisible = added ?? false;
         }
@@ -42,7 +47,7 @@ class _GameScreenState extends State<GameScreen> {
   void onLimitedKeyTap(String key) {
     showSnackBar(
       context: context,
-      backgroundColor: red,
+      backgroundColor: kRed,
       text: 'Chữ $key không có trong Tiếng Việt !',
     );
   }
@@ -70,7 +75,7 @@ class _GameScreenState extends State<GameScreen> {
         if (isCorrect) {
           showSnackBar(
             context: context,
-            backgroundColor: primary,
+            backgroundColor: kPrimary,
             text: 'You won !',
             duration: const Duration(days: 1),
           );
@@ -78,7 +83,7 @@ class _GameScreenState extends State<GameScreen> {
         } else if (_currentIndex == _board.length - 1) {
           showSnackBar(
             context: context,
-            backgroundColor: red,
+            backgroundColor: kRed,
             text: 'You lost',
             duration: const Duration(days: 1),
           );
@@ -91,7 +96,7 @@ class _GameScreenState extends State<GameScreen> {
     } else {
       showSnackBar(
         context: context,
-        backgroundColor: red,
+        backgroundColor: kRed,
         text: 'Bạn chưa nhập hết từ!',
       );
     }
@@ -109,7 +114,6 @@ class _GameScreenState extends State<GameScreen> {
         val: removedAccentLetterVal,
         status: enteredLetter.status,
       ));
-      print(specialKeys);
     }
   }
 
@@ -121,25 +125,14 @@ class _GameScreenState extends State<GameScreen> {
     return GestureDetector(
       onTap: () => setState(() => accentBoxVisible = false),
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          title: const Text(constants.appName),
-          centerTitle: true,
-          titleTextStyle: const TextStyle(
-            letterSpacing: 4,
-            fontWeight: FontWeight.bold,
-            fontSize: 32,
-            color: Colors.white,
-          ),
-        ),
+        appBar: renderAppBar(context),
         body: Stack(
           children: [
             Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Board(board: _board),
-                  const SizedBox(height: constants.defaultPadding),
+                  const SizedBox(height: kDefaultPadding),
                   Keyboard(
                     onKeyTap: onKeyTap,
                     onLimitedKeyTap: onLimitedKeyTap,
@@ -147,7 +140,7 @@ class _GameScreenState extends State<GameScreen> {
                     onDeleteTap: onDeleteTap,
                     specialKeys: specialKeys,
                   ),
-                  const SizedBox(height: constants.defaultPadding / 2),
+                  const SizedBox(height: kDefaultPadding / 2),
                 ]),
             AccentBox(
               onTap: onAccentTap,
@@ -159,4 +152,19 @@ class _GameScreenState extends State<GameScreen> {
       ),
     );
   }
+}
+
+AppBar renderAppBar(BuildContext context) {
+  return AppBar(
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    elevation: 0,
+    title: const Text(constants.appName),
+    centerTitle: true,
+    titleTextStyle: const TextStyle(
+      letterSpacing: 4,
+      fontWeight: FontWeight.bold,
+      fontSize: 32,
+      color: Colors.white,
+    ),
+  );
 }

@@ -16,11 +16,11 @@ class Letter {
       case LetterStatus.initial:
         return Colors.transparent;
       case LetterStatus.correct:
-        return primary;
+        return kPrimary;
       case LetterStatus.wrongAccent:
-        return secondary;
+        return kSecondary;
       case LetterStatus.wrongPosition:
-        return ternary;
+        return kTernary;
       case LetterStatus.notInWord:
         return Colors.grey[700]!;
       default:

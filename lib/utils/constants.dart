@@ -1,7 +1,7 @@
-import 'package:vi_word/models/models.dart';
+import 'package:vi_word/models/letter.dart';
+import 'package:vi_word/models/word.dart';
 
 const String appName = 'Vi Word';
-const double defaultPadding = 20;
 
 // game constants
 const enterKey = 'enter';
@@ -15,6 +15,7 @@ final List<Word> initBoard = List.generate(
   6,
   (_) => Word(letters: List.generate(6, (_) => Letter.empty())),
 );
+
 final Map<String, List<List<String>>> keyWithAccents = {
   'a': [
     ['', 'á', 'à', 'ả', 'ã', 'ạ'],

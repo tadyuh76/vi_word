@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vi_word/screens/game_screeen/game_screen.dart';
+import 'package:vi_word/widgets/max_width_container.dart';
 
 void main() => runApp(const App());
 
@@ -11,7 +12,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: const GameScreen(),
+      home: const MaxWidthContainer(child: GameScreen()),
     );
   }
 }

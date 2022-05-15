@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:vi_word/models/letter.dart';
+import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
 
@@ -27,18 +30,13 @@ class _KeyboardState extends State<Keyboard> {
     final limitedKeys = {'w', 'f', 'j', 'z'};
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       child: Column(
         children: keyRows
             .map(
               (row) => Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: row.map((key) {
-                  Letter currentKey = widget.specialKeys.firstWhere(
-                    (e) => e.val == key,
-                    orElse: () => Letter.empty(),
-                  );
-
                   if (key == enterKey) {
                     return _KeyboardButton.enter(onTap: widget.onEnterTap);
                   }
@@ -51,11 +49,16 @@ class _KeyboardState extends State<Keyboard> {
                       onTap: () => widget.onLimitedKeyTap(key),
                     );
                   } else {
+                    Letter currentKey = widget.specialKeys.firstWhere(
+                      (e) => e.val == key,
+                      orElse: () => Letter.empty(),
+                    );
+
                     return _KeyboardButton(
                       keyVal: key,
                       onTap: () => widget.onKeyTap(key),
                       backgroundColor: currentKey.val == ''
-                          ? grey
+                          ? kGrey
                           : currentKey.backgroundColor,
                     );
                   }
@@ -77,7 +80,7 @@ class _KeyboardButton extends StatelessWidget {
   const _KeyboardButton({
     Key? key,
     this.icon,
-    this.backgroundColor = grey,
+    this.backgroundColor = kGrey,
     required this.keyVal,
     required this.onTap,
   }) : super(key: key);
@@ -104,9 +107,11 @@ class _KeyboardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final keyWidth = (MediaQuery.of(context).size.width - defaultPadding) /
-            keyRows[0].length -
-        4;
+    final baseWidth = min(
+      MediaQuery.of(context).size.width,
+      kLayoutMaxWidth,
+    );
+    final keyWidth = (baseWidth - kDefaultPadding) / keyRows[0].length - 4;
     final bool isNotVietnamese = {'w', 'f', 'j', 'z'}.contains(keyVal);
 
     return Padding(
