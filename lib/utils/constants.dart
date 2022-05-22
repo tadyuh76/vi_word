@@ -1,6 +1,3 @@
-import 'package:vi_word/models/letter.dart';
-import 'package:vi_word/models/word.dart';
-
 const String appName = 'Vi Word';
 
 // game constants
@@ -11,10 +8,6 @@ const keyRows = [
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
   [delKey, 'z', 'x', 'c', 'v', 'b', 'n', 'm', enterKey],
 ];
-final List<Word> initBoard = List.generate(
-  6,
-  (_) => Word(letters: List.generate(6, (_) => Letter.empty())),
-);
 
 final Map<String, List<List<String>>> keyWithAccents = {
   'a': [
@@ -27,7 +20,7 @@ final Map<String, List<List<String>>> keyWithAccents = {
     ['ê', 'ế', 'ề', 'ể', 'ễ', 'ệ'],
   ],
   'i': [
-    ['', 'í', 'ì', 'ỉ', 'ĩ', 'ị'],
+    ['í', 'ì', 'ỉ', 'ĩ', 'ị'],
   ],
   'o': [
     ['', 'ó', 'ò', 'ỏ', 'õ', 'ọ'],
@@ -38,4 +31,10 @@ final Map<String, List<List<String>>> keyWithAccents = {
     ['', 'ú', 'ù', 'ủ', 'ũ', 'ụ'],
     ['ư', 'ứ', 'ừ', 'ử', 'ữ', 'ự'],
   ],
+  'y': [
+    ['ý', 'ỳ', 'ỷ', 'ỹ', 'ỵ']
+  ],
+  'd': [
+    ['đ']
+  ]
 };

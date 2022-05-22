@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/utils/breakpoints.dart';
@@ -115,9 +114,9 @@ class _KeyboardButton extends StatelessWidget {
     final bool isNotVietnamese = {'w', 'f', 'j', 'z'}.contains(keyVal);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
       child: Material(
-        color: isNotVietnamese ? Colors.grey[700] : backgroundColor,
+        color: isNotVietnamese ? kDarkGrey : backgroundColor,
         borderRadius: BorderRadius.circular(4),
         child: InkWell(
           onTap: onTap,
@@ -126,6 +125,9 @@ class _KeyboardButton extends StatelessWidget {
             width:
                 [enterKey, delKey].contains(keyVal) ? 1.5 * keyWidth : keyWidth,
             height: 1.3 * keyWidth,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+            ),
             child: icon != null
                 ? Icon(icon, size: 32)
                 : Text(

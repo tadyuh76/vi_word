@@ -13,8 +13,23 @@ class Letter {
 
   Color get backgroundColor {
     switch (status) {
+      case LetterStatus.correct:
+        return kPrimary.withAlpha(220);
+      case LetterStatus.wrongAccent:
+        return kSecondary.withAlpha(230);
+      case LetterStatus.wrongPosition:
+        return kTernary.withAlpha(220);
+      case LetterStatus.notInWord:
+        return kDarkGrey;
       case LetterStatus.initial:
         return Colors.transparent;
+      default:
+        return Colors.grey[700]!;
+    }
+  }
+
+  Color get borderColor {
+    switch (status) {
       case LetterStatus.correct:
         return kPrimary;
       case LetterStatus.wrongAccent:
@@ -24,16 +39,7 @@ class Letter {
       case LetterStatus.notInWord:
         return Colors.grey[700]!;
       default:
-        return Colors.transparent;
-    }
-  }
-
-  Color get borderColor {
-    switch (status) {
-      case LetterStatus.initial:
         return Colors.grey[700]!;
-      default:
-        return Colors.transparent;
     }
   }
 
