@@ -36,28 +36,4 @@ class Word {
       letters[lastLetterIndex] = Letter.empty();
     }
   }
-
-  bool validate(String solution, void Function(Letter) callback) {
-    int correct = 0;
-    for (int i = 0; i < letters.length; i++) {
-      final currentWordLetter = letters[i];
-      final currentSolutionLetter = solution[i];
-
-      if (currentWordLetter.val == currentSolutionLetter) {
-        correct++;
-        currentWordLetter.copyWith(status: LetterStatus.correct);
-      } else if (removeDiacritics(currentSolutionLetter) ==
-          removeDiacritics(currentWordLetter.val)) {
-        currentWordLetter.copyWith(status: LetterStatus.wrongAccent);
-      } else if (removeDiacritics(solution)
-          .contains(removeDiacritics(currentWordLetter.val))) {
-        currentWordLetter.copyWith(status: LetterStatus.wrongPosition);
-      } else {
-        currentWordLetter.copyWith(status: LetterStatus.notInWord);
-      }
-
-      callback(currentWordLetter);
-    }
-    return correct == letters.length;
-  }
 }

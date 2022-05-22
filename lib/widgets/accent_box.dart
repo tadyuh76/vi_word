@@ -1,6 +1,6 @@
 import 'dart:math';
-
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart' as constants;
@@ -37,13 +37,12 @@ class AccentBox extends StatelessWidget {
               width: baseSize * 0.6,
               padding: const EdgeInsets.all(kDefaultPadding / 3),
               decoration: BoxDecoration(
-                color: kPrimary,
+                color: kDarkGrey,
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: const [
                   BoxShadow(
-                    color: Colors.black,
-                    blurRadius: 8,
-                    offset: Offset(4, 4),
+                    blurRadius: 10,
+                    color: kBackground,
                   ),
                 ],
               ),
@@ -51,6 +50,8 @@ class AccentBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: accentedKeys
                     .map((e) => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: e
                               .map(
                                 (e) => accentedKeys.length == 1 && e == ''
@@ -66,17 +67,6 @@ class AccentBox extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            bottom: keyboardHeight + kDefaultPadding,
-            child: RotationTransition(
-              turns: const AlwaysStoppedAnimation(45 / 360),
-              child: Container(
-                width: 10,
-                height: 10,
-                color: kPrimary,
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -104,19 +94,22 @@ class _AccentedKey extends StatelessWidget {
           opacity: isEmptyAccent ? 0 : 1,
           child: InkWell(
             onTap: () => onTap(accentedKey),
-            child: Container(
-              height: 40,
-              margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
-              decoration: BoxDecoration(
-                color: Colors.black26,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Center(
-                child: Text(
-                  accentedKey,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 50),
+              child: Container(
+                height: 40,
+                margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Center(
+                  child: Text(
+                    accentedKey,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

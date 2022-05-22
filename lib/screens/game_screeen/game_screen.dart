@@ -1,10 +1,13 @@
+import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
+import 'package:vi_word/screens/game_screeen/app_bar.dart';
+import 'package:vi_word/services/game_service.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart' as constants;
-import 'package:vi_word/utils/remove_diacritics.dart';
 import 'package:vi_word/utils/show_snack_bar.dart';
 import 'package:vi_word/widgets/accent_box.dart';
 import 'package:vi_word/widgets/board.dart';
@@ -20,7 +23,11 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  final List<Word> _board = constants.initBoard;
+  final _gameService = GameService();
+  final _board = GameService.initBoard;
+  final _flipCardControllers = GameService.initFlipCardControllers;
+  final Set<Letter> specialKeys = {};
+
   int _currentIndex = 0;
   GameStatus _gameStatus = GameStatus.playing;
   bool accentBoxVisible = false;
@@ -29,15 +36,13 @@ class _GameScreenState extends State<GameScreen> {
       _currentIndex < _board.length ? _board[_currentIndex] : null;
   String get _solution => 'bánhmì';
 
-  final Set<Letter> specialKeys = {};
-
-  void onKeyTap(String val) {
+  void onKeyTap(String key) {
     if (_gameStatus == GameStatus.playing) {
       setState(() {
-        bool? added = _currentWord?.addLetter(val);
+        bool? added = _currentWord?.addLetter(key);
 
-        // if the key can has accent
-        if (constants.keyWithAccents.keys.contains(val)) {
+        // if the key can have accents
+        if (constants.keyWithAccents.keys.contains(key)) {
           accentBoxVisible = added ?? false;
         }
       });
@@ -66,12 +71,15 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
-  void onEnterTap() {
+  Future<void> onEnterTap() async {
     if (_gameStatus == GameStatus.playing &&
         _currentWord != null &&
         _currentWord!.letters.every((e) => e.val != '')) {
       setState(() {
-        bool isCorrect = _currentWord!.validate(_solution, updateKeyboard);
+        _gameStatus = GameStatus.submiting;
+        bool isCorrect =
+            _gameService.validate(_currentWord!, _solution, specialKeys);
+
         if (isCorrect) {
           showSnackBar(
             context: context,
@@ -90,30 +98,20 @@ class _GameScreenState extends State<GameScreen> {
           _gameStatus = GameStatus.lost;
         } else {
           _gameStatus = GameStatus.playing;
-          _currentIndex++;
         }
+        _currentIndex++;
       });
+
+      _gameService.flipCards(
+        _currentWord!,
+        _flipCardControllers[_currentIndex - 1],
+      );
     } else {
       showSnackBar(
         context: context,
         backgroundColor: kRed,
         text: 'Bạn chưa nhập hết từ!',
       );
-    }
-  }
-
-  void updateKeyboard(Letter enteredLetter) {
-    final removedAccentLetterVal = removeDiacritics(enteredLetter.val);
-    final keyToUpdate = specialKeys.firstWhere(
-        (e) => e.val == removedAccentLetterVal,
-        orElse: () => Letter.empty());
-
-    if (keyToUpdate.status != LetterStatus.correct) {
-      specialKeys.removeWhere((e) => e.val == removedAccentLetterVal);
-      specialKeys.add(Letter(
-        val: removedAccentLetterVal,
-        status: enteredLetter.status,
-      ));
     }
   }
 
@@ -129,19 +127,24 @@ class _GameScreenState extends State<GameScreen> {
         body: Stack(
           children: [
             Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Board(board: _board),
-                  const SizedBox(height: kDefaultPadding),
-                  Keyboard(
-                    onKeyTap: onKeyTap,
-                    onLimitedKeyTap: onLimitedKeyTap,
-                    onEnterTap: onEnterTap,
-                    onDeleteTap: onDeleteTap,
-                    specialKeys: specialKeys,
-                  ),
-                  const SizedBox(height: kDefaultPadding / 2),
-                ]),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(height: kDefaultPadding / 2),
+                Board(
+                  board: _board,
+                  flipCardControllers: _flipCardControllers,
+                ),
+                const SizedBox(height: kDefaultPadding / 2),
+                Keyboard(
+                  onKeyTap: onKeyTap,
+                  onLimitedKeyTap: onLimitedKeyTap,
+                  onEnterTap: onEnterTap,
+                  onDeleteTap: onDeleteTap,
+                  specialKeys: specialKeys,
+                ),
+                const SizedBox(height: kDefaultPadding / 2),
+              ],
+            ),
             AccentBox(
               onTap: onAccentTap,
               visible: accentBoxVisible,
@@ -152,19 +155,4 @@ class _GameScreenState extends State<GameScreen> {
       ),
     );
   }
-}
-
-AppBar renderAppBar(BuildContext context) {
-  return AppBar(
-    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    elevation: 0,
-    title: const Text(constants.appName),
-    centerTitle: true,
-    titleTextStyle: const TextStyle(
-      letterSpacing: 4,
-      fontWeight: FontWeight.bold,
-      fontSize: 32,
-      color: Colors.white,
-    ),
-  );
 }

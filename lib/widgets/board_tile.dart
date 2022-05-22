@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:vi_word/models/letter.dart';
+import 'package:vi_word/utils/colors.dart';
 
 class BoardTile extends StatelessWidget {
   final Letter letter;
@@ -13,19 +15,42 @@ class BoardTile extends StatelessWidget {
       return Container(
         width: size,
         height: size,
-        margin: const EdgeInsets.all(2),
-        padding: const EdgeInsets.all(4),
+        margin: const EdgeInsets.all(4),
+        padding: EdgeInsets.only(top: size * 0.05),
         alignment: Alignment.center,
         decoration: BoxDecoration(
+          color: kBackground,
           border: Border.all(color: letter.borderColor, width: 2),
-          color: letter.backgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: letter.backgroundColor,
+              spreadRadius: 2,
+              blurRadius: 4,
+            ),
+            BoxShadow(
+              color: letter.backgroundColor,
+              spreadRadius: 4,
+              blurRadius: 4,
+              inset: true,
+            ),
+          ],
+          // color: letter.backgroundColor,
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
           letter.val.toUpperCase(),
-          style: const TextStyle(
-            fontSize: 32,
+          style: TextStyle(
+            fontSize: size * 0.6,
             fontWeight: FontWeight.bold,
+            color:
+                letter.status == LetterStatus.notInWord ? kGrey : Colors.white,
+            shadows: [
+              BoxShadow(
+                color: letter.backgroundColor,
+                spreadRadius: 20,
+                blurRadius: 4,
+              )
+            ],
           ),
         ),
       );
