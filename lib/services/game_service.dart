@@ -61,7 +61,11 @@ class GameService {
 
   void flipCards(
       Word currentWord, List<FlipCardController> flipCardControllers) {
+<<<<<<< HEAD
     currentWord!.letters.asMap().forEach((i, element) async {
+=======
+    currentWord.letters.asMap().forEach((i, element) async {
+>>>>>>> 4ccdac8 (refactor code and redesign app ui)
       await Future.delayed(Duration(milliseconds: (i + 1) * 200),
           () => flipCardControllers[i].toggleCard());
     });

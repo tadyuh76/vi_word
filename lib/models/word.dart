@@ -1,5 +1,4 @@
 import 'package:vi_word/models/letter.dart';
-import 'package:vi_word/utils/remove_diacritics.dart';
 
 class Word {
   final List<Letter> letters;

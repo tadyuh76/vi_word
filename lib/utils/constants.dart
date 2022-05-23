@@ -1,6 +1,3 @@
-import 'package:vi_word/models/letter.dart';
-import 'package:vi_word/models/word.dart';
-
 const String appName = 'Vi Word';
 
 // game constants
