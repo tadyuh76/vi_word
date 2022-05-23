@@ -14,6 +14,7 @@ import 'package:vi_word/widgets/keyboard.dart';
 enum GameStatus { playing, won, lost, submiting }
 
 class GameScreen extends StatefulWidget {
+  static const routeName = '/game';
   const GameScreen({Key? key}) : super(key: key);
 
   @override
@@ -32,7 +33,17 @@ class _GameScreenState extends State<GameScreen> {
 
   Word? get _currentWord =>
       _currentIndex < _board.length ? _board[_currentIndex] : null;
-  String get _solution => 'bánhmì';
+  String get _solution => _gameService.getWordOfTheDay();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _flipCardControllers.forEach(
+      (element) => element.forEach(
+        (e) => e.controller!.dispose(),
+      ),
+    );
+  }
 
   void onKeyTap(String key) {
     if (_gameStatus == GameStatus.playing) {
@@ -70,47 +81,57 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Future<void> onEnterTap() async {
-    if (_gameStatus == GameStatus.playing &&
-        _currentWord != null &&
-        _currentWord!.letters.every((e) => e.val != '')) {
-      setState(() {
-        _gameStatus = GameStatus.submiting;
-        bool isCorrect =
-            _gameService.validate(_currentWord!, _solution, specialKeys);
-
-        if (isCorrect) {
-          showSnackBar(
-            context: context,
-            backgroundColor: kPrimary,
-            text: 'You won !',
-            duration: const Duration(days: 1),
-          );
-          _gameStatus = GameStatus.won;
-        } else if (_currentIndex == _board.length - 1) {
-          showSnackBar(
-            context: context,
-            backgroundColor: kRed,
-            text: 'You lost',
-            duration: const Duration(days: 1),
-          );
-          _gameStatus = GameStatus.lost;
-        } else {
-          _gameStatus = GameStatus.playing;
-        }
-        _currentIndex++;
-      });
-
-      _gameService.flipCards(
-        _currentWord!,
-        _flipCardControllers[_currentIndex - 1],
-      );
-    } else {
+    if (_gameStatus != GameStatus.playing) {
+      return;
+    }
+    if (_currentWord == null || _currentWord!.letters.any((e) => e.val == '')) {
       showSnackBar(
         context: context,
         backgroundColor: kRed,
         text: 'Bạn chưa nhập hết từ!',
       );
+      return;
     }
+
+    setState(() {
+      _gameStatus = GameStatus.submiting;
+
+      bool isVietnamese = _gameService.checkVietnamese(_currentWord!);
+      if (!isVietnamese) {
+        showSnackBar(
+          context: context,
+          backgroundColor: kRed,
+          text: 'Từ này không có trong tiếng Việt !',
+        );
+        _gameStatus = GameStatus.playing;
+        return;
+      }
+
+      bool isCorrect =
+          _gameService.validate(_currentWord!, _solution, specialKeys);
+      if (isCorrect) {
+        showSnackBar(
+          context: context,
+          backgroundColor: kPrimary,
+          text: 'You won !',
+        );
+        _gameStatus = GameStatus.won;
+      } else if (_currentIndex == _board.length - 1) {
+        showSnackBar(
+          context: context,
+          backgroundColor: kRed,
+          text: 'You lost',
+        );
+        _gameStatus = GameStatus.lost;
+      } else {
+        _gameStatus = GameStatus.playing;
+      }
+
+      _gameService.flipCards(
+        _currentWord!,
+        _flipCardControllers[_currentIndex++],
+      );
+    });
   }
 
   @override
@@ -132,7 +153,6 @@ class _GameScreenState extends State<GameScreen> {
                   board: _board,
                   flipCardControllers: _flipCardControllers,
                 ),
-                const SizedBox(height: kDefaultPadding / 2),
                 Keyboard(
                   onKeyTap: onKeyTap,
                   onLimitedKeyTap: onLimitedKeyTap,

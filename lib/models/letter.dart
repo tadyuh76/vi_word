@@ -20,11 +20,11 @@ class Letter {
       case LetterStatus.wrongPosition:
         return kTernary.withAlpha(220);
       case LetterStatus.notInWord:
-        return kDarkGrey;
+        return kMediumGrey;
       case LetterStatus.initial:
         return Colors.transparent;
       default:
-        return Colors.grey[700]!;
+        return kMediumGrey;
     }
   }
 
@@ -37,9 +37,9 @@ class Letter {
       case LetterStatus.wrongPosition:
         return kTernary;
       case LetterStatus.notInWord:
-        return Colors.grey[700]!;
+        return kMediumGrey;
       default:
-        return Colors.grey[700]!;
+        return kMediumGrey;
     }
   }
 

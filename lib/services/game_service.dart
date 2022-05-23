@@ -1,6 +1,7 @@
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
+import 'package:vi_word/resources/words.dart';
 import 'package:vi_word/utils/remove_diacritics.dart';
 
 class GameService {
@@ -14,6 +15,19 @@ class GameService {
     6,
     (index) => List.generate(6, (index) => FlipCardController()),
   );
+
+  String getWordOfTheDay() {
+    final now = DateTime.now();
+    final todayInDays =
+        now.difference(DateTime(now.year, 1, 1, 0, 0)).inDays + 1;
+
+    return words[todayInDays + 200];
+  }
+
+  bool checkVietnamese(Word word) {
+    print(word.wordString());
+    return words.contains(word.wordString());
+  }
 
   bool validate(
     Word word,
@@ -60,7 +74,9 @@ class GameService {
   }
 
   void flipCards(
-      Word currentWord, List<FlipCardController> flipCardControllers) {
+    Word currentWord,
+    List<FlipCardController> flipCardControllers,
+  ) {
     currentWord.letters.asMap().forEach((i, element) async {
       await Future.delayed(Duration(milliseconds: (i + 1) * 200),
           () => flipCardControllers[i].toggleCard());

@@ -13,7 +13,7 @@ AppBar renderAppBar(BuildContext context) {
       alignment: Alignment.center,
       padding: const EdgeInsets.only(left: kDefaultPadding),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () => Navigator.of(context).pop(),
         child: const FaIcon(
           FontAwesomeIcons.chevronLeft,
           size: 24,
@@ -41,10 +41,9 @@ AppBar renderAppBar(BuildContext context) {
         fontSize: 32,
         color: Colors.white,
         shadows: [
-          BoxShadow(
+          Shadow(
             color: kPrimary,
-            blurRadius: 8,
-            spreadRadius: 4,
+            blurRadius: 20,
           )
         ]),
   );

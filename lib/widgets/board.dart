@@ -42,11 +42,11 @@ class Board extends StatelessWidget {
                                   // direction: FlipDirection.HORIZONTAL,
                                   front: BoardTile(
                                     letter: Letter(val: letter.val),
-                                    size: baseSize / 7.2,
+                                    size: (baseSize / 6) - 8,
                                   ),
                                   back: BoardTile(
                                     letter: letter,
-                                    size: baseSize / 7.2,
+                                    size: (baseSize / 6) - 8,
                                   ),
                                 ),
                               ))

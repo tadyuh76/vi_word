@@ -37,15 +37,12 @@ class AccentBox extends StatelessWidget {
               width: baseSize * 0.6,
               padding: const EdgeInsets.all(kDefaultPadding / 3),
               decoration: BoxDecoration(
-                color: kDarkGrey,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: const [
-                  BoxShadow(
-                    blurRadius: 10,
-                    color: kBackground,
-                  ),
-                ],
-              ),
+                  border: Border.all(color: kDarkGrey, width: 1),
+                  borderRadius: BorderRadius.circular(8),
+                  gradient: const LinearGradient(
+                    colors: [kMediumGrey, kDarkGrey],
+                    begin: Alignment(-0.6, -.6),
+                  )),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: accentedKeys

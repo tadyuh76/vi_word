@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/utils/breakpoints.dart';
+import 'package:vi_word/utils/color_changer.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
 
@@ -29,7 +30,10 @@ class _KeyboardState extends State<Keyboard> {
     final limitedKeys = {'w', 'f', 'j', 'z'};
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: kDefaultPadding / 4,
+        vertical: kDefaultPadding,
+      ),
       child: Column(
         children: keyRows
             .map(
@@ -110,33 +114,42 @@ class _KeyboardButton extends StatelessWidget {
       MediaQuery.of(context).size.width,
       kLayoutMaxWidth,
     );
-    final keyWidth = (baseWidth - kDefaultPadding) / keyRows[0].length - 4;
+    final keyWidth = (baseWidth - kDefaultPadding / 2) / keyRows[0].length - 4;
     final bool isNotVietnamese = {'w', 'f', 'j', 'z'}.contains(keyVal);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
       child: Material(
-        color: isNotVietnamese ? kDarkGrey : backgroundColor,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(4),
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            alignment: Alignment.center,
-            width:
-                [enterKey, delKey].contains(keyVal) ? 1.5 * keyWidth : keyWidth,
-            height: 1.3 * keyWidth,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
+        clipBehavior: Clip.hardEdge,
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: isNotVietnamese
+                  ? [kMediumGrey, darken(kMediumGrey)]
+                  : [backgroundColor, darken(backgroundColor)],
+              begin: const Alignment(-.7, -1),
             ),
-            child: icon != null
-                ? Icon(icon, size: 32)
-                : Text(
-                    keyVal,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+          ),
+          child: InkWell(
+            onTap: onTap,
+            child: Container(
+              alignment: Alignment.center,
+              width: [enterKey, delKey].contains(keyVal)
+                  ? 1.5 * keyWidth
+                  : keyWidth,
+              height: 1.3 * keyWidth,
+              child: icon != null
+                  ? Icon(icon, size: 32)
+                  : Text(
+                      keyVal,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
-                  ),
+            ),
           ),
         ),
       ),
