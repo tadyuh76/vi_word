@@ -14,11 +14,16 @@ class App extends StatelessWidget {
     return MaxWidthContainer(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          fontFamily: 'Montserrat',
+        ).copyWith(
+          scaffoldBackgroundColor: kBackground,
+        ),
         routes: {
           HomeScreen.routeName: (context) => const HomeScreen(),
           GameScreen.routeName: (context) => const GameScreen(),
         },
-        theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: kBackground),
       ),
     );
   }

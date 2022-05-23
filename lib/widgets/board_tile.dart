@@ -19,18 +19,18 @@ class BoardTile extends StatelessWidget {
         padding: EdgeInsets.only(top: size * 0.05),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: kBackground,
-          border: Border.all(color: letter.borderColor, width: 1),
+          color: kBackground.withOpacity(0.6),
+          border: Border.all(color: letter.borderColor, width: 1.2),
           boxShadow: [
             BoxShadow(
               color: letter.backgroundColor,
-              spreadRadius: 2,
               blurRadius: 4,
+              spreadRadius: 2,
             ),
             BoxShadow(
               color: letter.backgroundColor,
-              spreadRadius: 4,
-              blurRadius: 4,
+              blurRadius: 8,
+              spreadRadius: 2,
               inset: true,
             ),
           ],
@@ -40,7 +40,6 @@ class BoardTile extends StatelessWidget {
           letter.val.toUpperCase(),
           style: TextStyle(
             fontSize: size * 0.6,
-            fontWeight: FontWeight.bold,
             color:
                 letter.status == LetterStatus.notInWord ? kGrey : Colors.white,
             shadows: [

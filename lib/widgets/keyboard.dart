@@ -30,10 +30,7 @@ class _KeyboardState extends State<Keyboard> {
     final limitedKeys = {'w', 'f', 'j', 'z'};
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kDefaultPadding / 4,
-        vertical: kDefaultPadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
       child: Column(
         children: keyRows
             .map(
@@ -51,20 +48,20 @@ class _KeyboardState extends State<Keyboard> {
                       keyVal: key,
                       onTap: () => widget.onLimitedKeyTap(key),
                     );
-                  } else {
-                    Letter currentKey = widget.specialKeys.firstWhere(
-                      (e) => e.val == key,
-                      orElse: () => Letter.empty(),
-                    );
-
-                    return _KeyboardButton(
-                      keyVal: key,
-                      onTap: () => widget.onKeyTap(key),
-                      backgroundColor: currentKey.val == ''
-                          ? kGrey
-                          : currentKey.backgroundColor,
-                    );
                   }
+
+                  Letter currentKey = widget.specialKeys.firstWhere(
+                    (e) => e.val == key,
+                    orElse: () => Letter.empty(),
+                  );
+
+                  return _KeyboardButton(
+                    keyVal: key,
+                    onTap: () => widget.onKeyTap(key),
+                    backgroundColor: currentKey.val == ''
+                        ? kGrey
+                        : currentKey.backgroundColor,
+                  );
                 }).toList(),
               ),
             )
@@ -122,34 +119,29 @@ class _KeyboardButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(4),
-        clipBehavior: Clip.hardEdge,
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: isNotVietnamese
-                  ? [kMediumGrey, darken(kMediumGrey)]
-                  : [backgroundColor, darken(backgroundColor)],
-              begin: const Alignment(-.7, -1),
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            alignment: Alignment.center,
+            width:
+                [enterKey, delKey].contains(keyVal) ? 1.5 * keyWidth : keyWidth,
+            height: 1.3 * keyWidth,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isNotVietnamese
+                    ? [kDarkGrey, darken(kDarkGrey, 0.2)]
+                    : [backgroundColor, darken(backgroundColor, 0.2)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(4),
             ),
-          ),
-          child: InkWell(
-            onTap: onTap,
-            child: Container(
-              alignment: Alignment.center,
-              width: [enterKey, delKey].contains(keyVal)
-                  ? 1.5 * keyWidth
-                  : keyWidth,
-              height: 1.3 * keyWidth,
-              child: icon != null
-                  ? Icon(icon, size: 32)
-                  : Text(
-                      keyVal,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-            ),
+            child: icon != null
+                ? Icon(icon, size: 32)
+                : Text(
+                    keyVal,
+                    style: const TextStyle(fontSize: 18),
+                  ),
           ),
         ),
       ),

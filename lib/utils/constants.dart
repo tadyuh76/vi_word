@@ -1,4 +1,4 @@
-const String appName = 'Vi Word';
+const String appName = 'ViGuess';
 
 // game constants
 const enterKey = 'enter';

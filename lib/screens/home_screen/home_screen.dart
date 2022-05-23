@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart' hide BoxDecoration, BoxShadow;
-import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
-import 'package:vi_word/screens/game_screeen/game_screen.dart';
+import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
+import 'package:vi_word/screens/home_screen/play_button.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
-import 'package:vi_word/widgets/button.dart';
+import 'package:vi_word/utils/constants.dart';
+import 'package:vi_word/widgets/scrren_background.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/';
@@ -12,55 +12,29 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              kDarkGrey,
-              kBackground,
-            ],
-            begin: Alignment(-.7, -1),
-          ),
-        ),
-        child: Center(
+      body: ScreenBackground(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const FlutterLogo(
-                size: 100,
-              ),
-              const SizedBox(
-                height: kDefaultPadding * 2,
-              ),
-              Button(
-                borderColor: kTernary,
-                
-                textColor: kSecondary,
-                text: "PLAY",
-                onTap: () =>
-                    Navigator.of(context).pushNamed(GameScreen.routeName),
-              ),
-              const SizedBox(height: kDefaultPadding * 2),
-              Button(
-                borderColor: kTernary,
-                textColor: kTernary,
-                text: "ONLINE",
-                onTap: () =>
-                    Navigator.of(context).pushNamed(GameScreen.routeName),
-              ),
-              const SizedBox(height: kDefaultPadding * 2),
-              Button(
-                borderColor: kTernary,
-                textColor: kTernary,
-                text: "MORE",
-                onTap: () =>
-                    Navigator.of(context).pushNamed(GameScreen.routeName),
-              ),
-            ],
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            appName.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 48,
+              color: Colors.white,
+              letterSpacing: 4,
+              shadows: [
+                Shadow(
+                  color: kSecondary,
+                  blurRadius: 8,
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+          const SizedBox(height: kDefaultPadding * 2),
+          const PlayButton()
+        ],
+      )),
     );
   }
 }
