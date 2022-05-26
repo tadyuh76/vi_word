@@ -26,48 +26,52 @@ class AccentBox extends StatelessWidget {
       return Container();
     }
 
-    return Visibility(
-      visible: visible,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned(
-            bottom: keyboardHeight + kDefaultPadding + 5,
-            child: Container(
-              width: baseSize * 0.6,
-              padding: const EdgeInsets.all(kDefaultPadding / 3),
-              decoration: BoxDecoration(
-                color: kDarkGrey,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: const [
-                  BoxShadow(
-                    blurRadius: 10,
-                    color: kBackground,
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: accentedKeys
-                    .map((e) => Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: e
-                              .map(
-                                (e) => accentedKeys.length == 1 && e == ''
-                                    ? Container()
-                                    : _AccentedKey(
-                                        accentedKey: e,
-                                        onTap: onTap,
-                                      ),
-                              )
-                              .toList(),
-                        ))
-                    .toList(),
+    return AnimatedScale(
+      scale: visible ? 1 : 0,
+      duration: const Duration(milliseconds: 200),
+      child: Visibility(
+        visible: visible,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned(
+              bottom: keyboardHeight + kDefaultPadding,
+              child: Container(
+                width: baseSize * 0.6,
+                padding: const EdgeInsets.all(kDefaultPadding / 2),
+                decoration: BoxDecoration(
+                  color: kDarkGrey,
+                  borderRadius: BorderRadius.circular(kDefaultPadding),
+                  boxShadow: const [
+                    BoxShadow(
+                      blurRadius: 10,
+                      color: kBackground,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: accentedKeys
+                      .map((e) => Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: e
+                                .map(
+                                  (e) => accentedKeys.length == 1 && e == ''
+                                      ? Container()
+                                      : _AccentedKey(
+                                          accentedKey: e,
+                                          onTap: onTap,
+                                        ),
+                                )
+                                .toList(),
+                          ))
+                      .toList(),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -100,7 +104,7 @@ class _AccentedKey extends StatelessWidget {
                 height: 40,
                 margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: kMediumGrey,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Center(
@@ -108,7 +112,6 @@ class _AccentedKey extends StatelessWidget {
                     accentedKey,
                     style: const TextStyle(
                       fontSize: 20,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

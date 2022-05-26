@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/utils/breakpoints.dart';
+import 'package:vi_word/utils/color_changer.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
 
@@ -29,7 +30,7 @@ class _KeyboardState extends State<Keyboard> {
     final limitedKeys = {'w', 'f', 'j', 'z'};
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 4),
       child: Column(
         children: keyRows
             .map(
@@ -47,20 +48,20 @@ class _KeyboardState extends State<Keyboard> {
                       keyVal: key,
                       onTap: () => widget.onLimitedKeyTap(key),
                     );
-                  } else {
-                    Letter currentKey = widget.specialKeys.firstWhere(
-                      (e) => e.val == key,
-                      orElse: () => Letter.empty(),
-                    );
-
-                    return _KeyboardButton(
-                      keyVal: key,
-                      onTap: () => widget.onKeyTap(key),
-                      backgroundColor: currentKey.val == ''
-                          ? kGrey
-                          : currentKey.backgroundColor,
-                    );
                   }
+
+                  Letter currentKey = widget.specialKeys.firstWhere(
+                    (e) => e.val == key,
+                    orElse: () => Letter.empty(),
+                  );
+
+                  return _KeyboardButton(
+                    keyVal: key,
+                    onTap: () => widget.onKeyTap(key),
+                    backgroundColor: currentKey.val == ''
+                        ? kGrey
+                        : currentKey.backgroundColor,
+                  );
                 }).toList(),
               ),
             )
@@ -110,7 +111,7 @@ class _KeyboardButton extends StatelessWidget {
       MediaQuery.of(context).size.width,
       kLayoutMaxWidth,
     );
-    final keyWidth = (baseWidth - kDefaultPadding) / keyRows[0].length - 4;
+    final keyWidth = (baseWidth - kDefaultPadding / 2) / keyRows[0].length - 4;
     final bool isNotVietnamese = {'w', 'f', 'j', 'z'}.contains(keyVal);
 
     return Padding(
@@ -126,16 +127,20 @@ class _KeyboardButton extends StatelessWidget {
                 [enterKey, delKey].contains(keyVal) ? 1.5 * keyWidth : keyWidth,
             height: 1.3 * keyWidth,
             decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isNotVietnamese
+                    ? [kDarkGrey, darken(kDarkGrey, 0.2)]
+                    : [backgroundColor, darken(backgroundColor, 0.2)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(4),
             ),
             child: icon != null
                 ? Icon(icon, size: 32)
                 : Text(
                     keyVal,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+                    style: const TextStyle(fontSize: 18),
                   ),
           ),
         ),

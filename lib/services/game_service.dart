@@ -1,6 +1,7 @@
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
+import 'package:vi_word/resources/words.dart';
 import 'package:vi_word/utils/remove_diacritics.dart';
 
 class GameService {
@@ -14,6 +15,17 @@ class GameService {
     6,
     (index) => List.generate(6, (index) => FlipCardController()),
   );
+
+  String getWordOfTheDay() {
+    final now = DateTime.now();
+    final todayInDays = now.difference(DateTime(now.year, 1, 1, 0, 0)).inDays;
+    print(todayInDays);
+    return words[todayInDays];
+  }
+
+  bool checkVietnamese(Word word) {
+    return words.contains(word.wordString());
+  }
 
   bool validate(
     Word word,
@@ -46,6 +58,7 @@ class GameService {
 
   void updateKeyboard(Letter enteredLetter, Set<Letter> specialKeys) {
     final removedAccentLetterVal = removeDiacritics(enteredLetter.val);
+    print(removedAccentLetterVal);
     final keyToUpdate = specialKeys.firstWhere(
         (e) => e.val == removedAccentLetterVal,
         orElse: () => Letter.empty());
@@ -60,12 +73,10 @@ class GameService {
   }
 
   void flipCards(
-      Word currentWord, List<FlipCardController> flipCardControllers) {
-<<<<<<< HEAD
-    currentWord!.letters.asMap().forEach((i, element) async {
-=======
+    Word currentWord,
+    List<FlipCardController> flipCardControllers,
+  ) {
     currentWord.letters.asMap().forEach((i, element) async {
->>>>>>> 4ccdac8 (refactor code and redesign app ui)
       await Future.delayed(Duration(milliseconds: (i + 1) * 200),
           () => flipCardControllers[i].toggleCard());
     });

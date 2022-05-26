@@ -1,21 +1,21 @@
-import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
 import 'package:vi_word/screens/game_screeen/app_bar.dart';
 import 'package:vi_word/services/game_service.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
-import 'package:vi_word/utils/constants.dart' as constants;
+import 'package:vi_word/utils/constants.dart';
 import 'package:vi_word/utils/show_snack_bar.dart';
 import 'package:vi_word/widgets/accent_box.dart';
 import 'package:vi_word/widgets/board.dart';
 import 'package:vi_word/widgets/keyboard.dart';
+import 'package:vi_word/widgets/scrren_background.dart';
 
 enum GameStatus { playing, won, lost, submiting }
 
 class GameScreen extends StatefulWidget {
+  static const routeName = '/game';
   const GameScreen({Key? key}) : super(key: key);
 
   @override
@@ -34,26 +34,27 @@ class _GameScreenState extends State<GameScreen> {
 
   Word? get _currentWord =>
       _currentIndex < _board.length ? _board[_currentIndex] : null;
-  String get _solution => 'bánhmì';
+  String get _solution => _gameService.getWordOfTheDay();
 
   void onKeyTap(String key) {
-    if (_gameStatus == GameStatus.playing) {
-      setState(() {
-        bool? added = _currentWord?.addLetter(key);
+    if (_gameStatus != GameStatus.playing) return;
 
-        // if the key can have accents
-        if (constants.keyWithAccents.keys.contains(key)) {
-          accentBoxVisible = added ?? false;
-        }
-      });
-    }
+    setState(() {
+      bool? added = _currentWord?.addLetter(key);
+
+      if (keyWithAccents.containsKey(key) && added == true) {
+        accentBoxVisible = true;
+      }
+    });
   }
 
   void onLimitedKeyTap(String key) {
+    if (_gameStatus != GameStatus.playing) return;
+
     showSnackBar(
       context: context,
       backgroundColor: kRed,
-      text: 'Chữ $key không có trong Tiếng Việt !',
+      text: 'Chữ "$key" không có trong Tiếng Việt !',
     );
   }
 
@@ -66,42 +67,41 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void onDeleteTap() {
-    if (_gameStatus == GameStatus.playing) {
-      setState(() => _currentWord?.removeLetter());
-    }
+    if (_gameStatus != GameStatus.playing) return;
+
+    setState(() => _currentWord?.removeLetter());
   }
 
   Future<void> onEnterTap() async {
-    if (_gameStatus != GameStatus.playing) {
-      return;
-    }
+    if (_gameStatus != GameStatus.playing) return;
+
     if (_currentWord == null || _currentWord!.letters.any((e) => e.val == '')) {
-      showSnackBar(
+      return showSnackBar(
         context: context,
         backgroundColor: kRed,
         text: 'Bạn chưa nhập hết từ!',
       );
-      return;
+    }
+
+    bool isVietnamese = _gameService.checkVietnamese(_currentWord!);
+    if (!isVietnamese) {
+      return showSnackBar(
+        context: context,
+        backgroundColor: kRed,
+        text: 'Từ này không có trong danh sách!',
+      );
     }
 
     setState(() {
-      bool isVietnamese = _gameService.checkVietnamese(_currentWord!);
-      if (!isVietnamese) {
-        showSnackBar(
-          context: context,
-          backgroundColor: kRed,
-          text: 'Từ này không có trong tiếng Việt!',
-        );
-      }
-
       _gameStatus = GameStatus.submiting;
+
       bool isCorrect =
           _gameService.validate(_currentWord!, _solution, specialKeys);
       if (isCorrect) {
         showSnackBar(
           context: context,
           backgroundColor: kPrimary,
-          text: 'You won !',
+          text: 'Bạn đã hoàn thành từ của ngày hôm nay !',
           duration: const Duration(days: 1),
         );
         _gameStatus = GameStatus.won;
@@ -109,7 +109,7 @@ class _GameScreenState extends State<GameScreen> {
         showSnackBar(
           context: context,
           backgroundColor: kRed,
-          text: 'You lost',
+          text: 'Từ của ngày hôm nay là $_solution',
           duration: const Duration(days: 1),
         );
         _gameStatus = GameStatus.lost;
@@ -131,36 +131,39 @@ class _GameScreenState extends State<GameScreen> {
         _currentWord != null ? _currentWord!.lastLetter : Letter.empty();
 
     return GestureDetector(
-      onTap: () => setState(() => accentBoxVisible = false),
+      onTap: () => Future.delayed(const Duration(milliseconds: 400),
+          () => setState(() => accentBoxVisible = false)),
       child: Scaffold(
         appBar: renderAppBar(context),
-        body: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(height: kDefaultPadding / 2),
-                Board(
-                  board: _board,
-                  flipCardControllers: _flipCardControllers,
-                ),
-                const SizedBox(height: kDefaultPadding / 2),
-                Keyboard(
-                  onKeyTap: onKeyTap,
-                  onLimitedKeyTap: onLimitedKeyTap,
-                  onEnterTap: onEnterTap,
-                  onDeleteTap: onDeleteTap,
-                  specialKeys: specialKeys,
-                ),
-                const SizedBox(height: kDefaultPadding / 2),
-              ],
-            ),
-            AccentBox(
-              onTap: onAccentTap,
-              visible: accentBoxVisible,
-              keyVal: lastLetter.val,
-            ),
-          ],
+        body: ScreenBackground(
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(height: kDefaultPadding / 2),
+                  Board(
+                    board: _board,
+                    flipCardControllers: _flipCardControllers,
+                  ),
+                  const SizedBox(height: kDefaultPadding / 2),
+                  Keyboard(
+                    onKeyTap: onKeyTap,
+                    onLimitedKeyTap: onLimitedKeyTap,
+                    onEnterTap: onEnterTap,
+                    onDeleteTap: onDeleteTap,
+                    specialKeys: specialKeys,
+                  ),
+                  const SizedBox(height: kDefaultPadding / 2),
+                ],
+              ),
+              AccentBox(
+                onTap: onAccentTap,
+                keyVal: lastLetter.val,
+                visible: accentBoxVisible,
+              )
+            ],
+          ),
         ),
       ),
     );
