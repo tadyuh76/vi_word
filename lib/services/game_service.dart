@@ -19,8 +19,7 @@ class GameService {
   String getWordOfTheDay() {
     final now = DateTime.now();
     final todayInDays = now.difference(DateTime(now.year, 1, 1, 0, 0)).inDays;
-    print(todayInDays);
-    return words[todayInDays];
+    return words[todayInDays + (now.year - 2022) * 365];
   }
 
   bool checkVietnamese(Word word) {
@@ -58,7 +57,6 @@ class GameService {
 
   void updateKeyboard(Letter enteredLetter, Set<Letter> specialKeys) {
     final removedAccentLetterVal = removeDiacritics(enteredLetter.val);
-    print(removedAccentLetterVal);
     final keyToUpdate = specialKeys.firstWhere(
         (e) => e.val == removedAccentLetterVal,
         orElse: () => Letter.empty());

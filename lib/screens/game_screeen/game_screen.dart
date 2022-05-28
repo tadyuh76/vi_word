@@ -11,6 +11,7 @@ import 'package:vi_word/widgets/accent_box.dart';
 import 'package:vi_word/widgets/board.dart';
 import 'package:vi_word/widgets/keyboard.dart';
 import 'package:vi_word/widgets/scrren_background.dart';
+import 'package:vi_word/widgets/tutorial_dialog.dart';
 
 enum GameStatus { playing, won, lost, submiting }
 
@@ -35,6 +36,13 @@ class _GameScreenState extends State<GameScreen> {
   Word? get _currentWord =>
       _currentIndex < _board.length ? _board[_currentIndex] : null;
   String get _solution => _gameService.getWordOfTheDay();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => showDialog(
+        context: context, builder: (context) => const TutorialDialog()));
+  }
 
   void onKeyTap(String key) {
     if (_gameStatus != GameStatus.playing) return;
