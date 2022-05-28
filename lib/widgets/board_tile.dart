@@ -34,7 +34,6 @@ class BoardTile extends StatelessWidget {
               inset: true,
             ),
           ],
-          // color: letter.backgroundColor,
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
@@ -44,10 +43,9 @@ class BoardTile extends StatelessWidget {
             color:
                 letter.status == LetterStatus.notInWord ? kGrey : Colors.white,
             shadows: [
-              BoxShadow(
+              Shadow(
                 color: letter.backgroundColor,
-                spreadRadius: 20,
-                blurRadius: 4,
+                blurRadius: 20,
               )
             ],
           ),

@@ -18,11 +18,22 @@ class GameService {
 
   String getWordOfTheDay() {
     final now = DateTime.now();
+<<<<<<< HEAD
     final todayInDays = now.difference(DateTime(now.year, 1, 1, 0, 0)).inDays;
     return words[todayInDays + (now.year - 2022) * 365];
   }
 
   bool checkVietnamese(Word word) {
+=======
+    final todayInDays =
+        now.difference(DateTime(now.year, 1, 1, 0, 0)).inDays + 1;
+
+    return words[todayInDays + 200];
+  }
+
+  bool checkVietnamese(Word word) {
+    print(word.wordString());
+>>>>>>> cea393e (add words and minor features)
     return words.contains(word.wordString());
   }
 

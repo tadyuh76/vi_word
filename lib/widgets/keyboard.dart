@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/utils/breakpoints.dart';
@@ -117,7 +118,7 @@ class _KeyboardButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
       child: Material(
-        color: isNotVietnamese ? kDarkGrey : backgroundColor,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(4),
         child: InkWell(
           onTap: onTap,
