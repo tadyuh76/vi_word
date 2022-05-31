@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
-import 'package:vi_word/screens/game_screeen/app_bar.dart';
+import 'package:vi_word/screens/game_screen/app_bar.dart';
 import 'package:vi_word/services/game_service.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
@@ -11,7 +12,7 @@ import 'package:vi_word/utils/show_snack_bar.dart';
 import 'package:vi_word/widgets/accent_box.dart';
 import 'package:vi_word/widgets/board.dart';
 import 'package:vi_word/widgets/keyboard.dart';
-import 'package:vi_word/widgets/scrren_background.dart';
+import 'package:vi_word/widgets/screen_background.dart';
 import 'package:vi_word/widgets/tutorial_dialog.dart';
 
 class GameScreen extends StatefulWidget {
@@ -40,10 +41,20 @@ class _GameScreenState extends State<GameScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => showDialog(
-          context: context, builder: (context) => const TutorialDialog()),
-    );
+    checkAlreadyPlayed();
+  }
+
+  Future<void> checkAlreadyPlayed() async {
+    try {
+      final box = Hive.box('gameData');
+      final alreadyPlayed = await box.get('alreadyPlayed');
+      if (alreadyPlayed == true) return;
+
+      showDialog(context: context, builder: (_) => const TutorialDialog());
+      box.put('alreadyPlayed', true);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   void onKeyTap(String key) {
@@ -103,7 +114,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     setState(() {
-      _gameStatus = GameStatus.submiting;
+      _gameStatus = GameStatus.submitting;
 
       bool isCorrect = _gameService.validate(_currentWord!, _solution);
 

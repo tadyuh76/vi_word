@@ -62,17 +62,21 @@ class GameService {
     }
 
     for (int i = 0; i < letters.length; i++) {
-      final Letter currentWordLetter = letters[i];
+      final Letter currentGuessLetter = letters[i];
       final String currentSolutionLetter = solution[i];
+      final String removedDiacriticsGuessLetter =
+          removeDiacritics(currentGuessLetter.val);
 
-      bool isCorrect = currentWordLetter.val == currentSolutionLetter;
+      bool isCorrect = currentGuessLetter.val == currentSolutionLetter;
       bool isWrongAccent = removeDiacritics(currentSolutionLetter) ==
-          removeDiacritics(currentWordLetter.val);
+          removedDiacriticsGuessLetter;
       bool isWrongPosition = removeDiacritics(remainLettersToCheck)
-          .contains(removeDiacritics(currentWordLetter.val));
+          .contains(removedDiacriticsGuessLetter);
 
       if (isWrongPosition && !isCorrect && !isWrongAccent) {
-        currentWordLetter.copyWith(status: LetterStatus.wrongPosition);
+        remainLettersToCheck = remainLettersToCheck.replaceFirst(
+            removedDiacriticsGuessLetter, ' ', i);
+        currentGuessLetter.copyWith(status: LetterStatus.wrongPosition);
       }
     }
 

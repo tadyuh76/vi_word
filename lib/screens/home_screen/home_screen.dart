@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:vi_word/screens/home_screen/play_button.dart';
+import 'package:vi_word/screens/home_screen/tab_item.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
-import 'package:vi_word/widgets/scrren_background.dart';
+import 'package:vi_word/widgets/screen_background.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/';
@@ -13,28 +16,58 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            appName.toUpperCase(),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 48,
-              color: Colors.white,
-              letterSpacing: 4,
-              shadows: [
-                Shadow(
-                  color: kSecondary,
-                  blurRadius: 8,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 2),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  appName.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 48,
+                    color: Colors.white,
+                    letterSpacing: 4,
+                    shadows: [
+                      BoxShadow(
+                        color: Colors.white,
+                        blurRadius: 4,
+                      ),
+                      BoxShadow(
+                        color: kSecondary,
+                        blurRadius: 16,
+                      ),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                const PlayButton(),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TabItem(
+                      onTap: () {},
+                      icon: SvgPicture.asset('assets/icons/profile.svg'),
+                      text: "Profile",
+                    ),
+                    TabItem(
+                      onTap: () {},
+                      icon: SvgPicture.asset('assets/icons/diamond.svg'),
+                      text: "About",
+                    ),
+                    TabItem(
+                      onTap: () {},
+                      icon: SvgPicture.asset('assets/icons/settings.svg'),
+                      text: "Settings",
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          const SizedBox(height: kDefaultPadding * 2),
-          const PlayButton()
-        ],
-      )),
+        ),
+      ),
     );
   }
 }

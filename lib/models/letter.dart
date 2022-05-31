@@ -35,8 +35,6 @@ class Letter {
         return kSecondary;
       case LetterStatus.wrongPosition:
         return kTernary;
-      case LetterStatus.notInWord:
-        return kMediumGrey;
       default:
         return kMediumGrey;
     }

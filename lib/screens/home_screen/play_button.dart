@@ -2,7 +2,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:vi_word/screens/game_screeen/game_screen.dart';
+import 'package:vi_word/screens/game_screen/game_screen.dart';
 import 'package:vi_word/utils/colors.dart';
 
 class PlayButton extends StatelessWidget {

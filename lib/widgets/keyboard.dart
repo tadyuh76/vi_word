@@ -140,7 +140,7 @@ class _KeyboardButton extends StatelessWidget {
                 ? Icon(icon, size: 32)
                 : Text(
                     keyVal,
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 20),
                   ),
           ),
         ),

@@ -13,7 +13,7 @@ class ScreenBackground extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Opacity(
-          opacity: 0.8,
+          opacity: 0.9,
           child: Image.asset(
             'assets/background.jpg',
             width: double.infinity,

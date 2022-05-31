@@ -23,7 +23,9 @@ class Board extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final baseSize = min(constraints.maxHeight, constraints.maxWidth);
+            final baseSize = min(
+                min(constraints.maxHeight, constraints.maxWidth),
+                kLayoutMaxWidth);
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,14 +44,13 @@ class Board extends StatelessWidget {
                                   FlipCard(
                                     controller: flipCardControllers[i][j],
                                     flipOnTouch: false,
-                                    // direction: FlipDirection.HORIZONTAL,
                                     front: BoardTile(
                                       letter: Letter(val: letter.val),
-                                      size: (baseSize / 6) - 8,
+                                      size: (baseSize / 6) - 10,
                                     ),
                                     back: BoardTile(
                                       letter: letter,
-                                      size: (baseSize / 6) - 8,
+                                      size: (baseSize / 6) - 10,
                                     ),
                                   ),
                                 ))
