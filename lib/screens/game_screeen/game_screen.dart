@@ -6,14 +6,13 @@ import 'package:vi_word/services/game_service.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
+import 'package:vi_word/utils/enums.dart';
 import 'package:vi_word/utils/show_snack_bar.dart';
 import 'package:vi_word/widgets/accent_box.dart';
 import 'package:vi_word/widgets/board.dart';
 import 'package:vi_word/widgets/keyboard.dart';
 import 'package:vi_word/widgets/scrren_background.dart';
 import 'package:vi_word/widgets/tutorial_dialog.dart';
-
-enum GameStatus { playing, won, lost, submiting }
 
 class GameScreen extends StatefulWidget {
   static const routeName = '/game';
@@ -25,8 +24,6 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   final _gameService = GameService();
-  final _board = GameService.initBoard;
-  final _flipCardControllers = GameService.initFlipCardControllers;
   final Set<Letter> specialKeys = {};
 
   int _currentIndex = 0;
@@ -37,11 +34,16 @@ class _GameScreenState extends State<GameScreen> {
       _currentIndex < _board.length ? _board[_currentIndex] : null;
   String get _solution => _gameService.getWordOfTheDay();
 
+  late final _board = _gameService.initBoard;
+  late final _flipCardControllers = _gameService.initFlipCardControllers;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => showDialog(
-        context: context, builder: (context) => const TutorialDialog()));
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => showDialog(
+          context: context, builder: (context) => const TutorialDialog()),
+    );
   }
 
   void onKeyTap(String key) {
@@ -89,7 +91,6 @@ class _GameScreenState extends State<GameScreen> {
         backgroundColor: kRed,
         text: 'Bạn chưa nhập hết từ!',
       );
-      return;
     }
 
     bool isVietnamese = _gameService.checkVietnamese(_currentWord!);
@@ -104,8 +105,8 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       _gameStatus = GameStatus.submiting;
 
-      bool isCorrect =
-          _gameService.validate(_currentWord!, _solution, specialKeys);
+      bool isCorrect = _gameService.validate(_currentWord!, _solution);
+
       if (isCorrect) {
         showSnackBar(
           context: context,
@@ -125,6 +126,8 @@ class _GameScreenState extends State<GameScreen> {
       } else {
         _gameStatus = GameStatus.playing;
       }
+
+      _gameService.updateKeyboard(_currentWord!, specialKeys);
       _currentIndex++;
     });
 

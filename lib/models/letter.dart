@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vi_word/utils/colors.dart';
-
-enum LetterStatus { initial, notInWord, wrongPosition, wrongAccent, correct }
+import 'package:vi_word/utils/enums.dart';
 
 class Letter {
   String val;
@@ -52,6 +51,6 @@ class Letter {
 
   @override
   String toString() {
-    return "{val: $val, status: $status}";
+    return "($val, $status)";
   }
 }

@@ -2,19 +2,27 @@ import 'package:flip_card/flip_card_controller.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
 import 'package:vi_word/resources/words.dart';
+import 'package:vi_word/utils/enums.dart';
 import 'package:vi_word/utils/remove_diacritics.dart';
 
 class GameService {
-  static final List<Word> initBoard = List.generate(
-    6,
-    (_) => Word(letters: List.generate(6, (_) => Letter.empty())),
-  );
+  final _statusPriority = {
+    LetterStatus.initial: 0,
+    LetterStatus.notInWord: 1,
+    LetterStatus.wrongPosition: 2,
+    LetterStatus.wrongAccent: 3,
+    LetterStatus.correct: 4,
+  };
 
-  static final List<List<FlipCardController>> initFlipCardControllers =
-      List.generate(
-    6,
-    (index) => List.generate(6, (index) => FlipCardController()),
-  );
+  get initBoard => List.generate(
+        6,
+        (_) => Word(letters: List.generate(6, (_) => Letter.empty())),
+      );
+
+  get initFlipCardControllers => List.generate(
+        6,
+        (_) => List.generate(6, (_) => FlipCardController()),
+      );
 
   String getWordOfTheDay() {
     final now = DateTime.now();
@@ -26,47 +34,66 @@ class GameService {
     return words.contains(word.wordString());
   }
 
-  bool validate(
-    Word word,
-    String solution,
-    Set<Letter> specialKeys,
-  ) {
+  bool validate(Word word, String solution) {
     int correct = 0;
     final letters = word.letters;
-    for (int i = 0; i < letters.length; i++) {
-      final currentWordLetter = letters[i];
-      final currentSolutionLetter = solution[i];
+    String remainLettersToCheck = solution;
 
-      if (currentWordLetter.val == currentSolutionLetter) {
+    for (int i = 0; i < letters.length; i++) {
+      final Letter currentWordLetter = letters[i];
+      final String currentSolutionLetter = solution[i];
+
+      bool isCorrect = currentWordLetter.val == currentSolutionLetter;
+      bool isWrongAccent = removeDiacritics(currentSolutionLetter) ==
+          removeDiacritics(currentWordLetter.val);
+
+      if (isCorrect) {
         correct++;
+        remainLettersToCheck =
+            remainLettersToCheck.replaceFirst(remainLettersToCheck[i], ' ', i);
         currentWordLetter.copyWith(status: LetterStatus.correct);
-      } else if (removeDiacritics(currentSolutionLetter) ==
-          removeDiacritics(currentWordLetter.val)) {
+      } else if (isWrongAccent) {
+        remainLettersToCheck =
+            remainLettersToCheck.replaceFirst(remainLettersToCheck[i], ' ', i);
         currentWordLetter.copyWith(status: LetterStatus.wrongAccent);
-      } else if (removeDiacritics(solution)
-          .contains(removeDiacritics(currentWordLetter.val))) {
-        currentWordLetter.copyWith(status: LetterStatus.wrongPosition);
       } else {
         currentWordLetter.copyWith(status: LetterStatus.notInWord);
       }
-
-      updateKeyboard(currentWordLetter, specialKeys);
     }
+
+    for (int i = 0; i < letters.length; i++) {
+      final Letter currentWordLetter = letters[i];
+      final String currentSolutionLetter = solution[i];
+
+      bool isCorrect = currentWordLetter.val == currentSolutionLetter;
+      bool isWrongAccent = removeDiacritics(currentSolutionLetter) ==
+          removeDiacritics(currentWordLetter.val);
+      bool isWrongPosition = removeDiacritics(remainLettersToCheck)
+          .contains(removeDiacritics(currentWordLetter.val));
+
+      if (isWrongPosition && !isCorrect && !isWrongAccent) {
+        currentWordLetter.copyWith(status: LetterStatus.wrongPosition);
+      }
+    }
+
     return correct == letters.length;
   }
 
-  void updateKeyboard(Letter enteredLetter, Set<Letter> specialKeys) {
-    final removedAccentLetterVal = removeDiacritics(enteredLetter.val);
-    final keyToUpdate = specialKeys.firstWhere(
-        (e) => e.val == removedAccentLetterVal,
-        orElse: () => Letter.empty());
+  void updateKeyboard(Word enteredWord, Set<Letter> specialKeys) {
+    for (Letter enteredLetter in enteredWord.letters) {
+      final removedAccentLetterVal = removeDiacritics(enteredLetter.val);
+      final currentSavedKey = specialKeys.firstWhere(
+          (e) => e.val == removedAccentLetterVal,
+          orElse: () => Letter.empty());
 
-    if (keyToUpdate.status != LetterStatus.correct) {
-      specialKeys.removeWhere((e) => e.val == removedAccentLetterVal);
-      specialKeys.add(Letter(
-        val: removedAccentLetterVal,
-        status: enteredLetter.status,
-      ));
+      if (_statusPriority[enteredLetter.status]! >
+          _statusPriority[currentSavedKey.status]!) {
+        specialKeys.removeWhere((e) => e.val == removedAccentLetterVal);
+        specialKeys.add(Letter(
+          val: removedAccentLetterVal,
+          status: enteredLetter.status,
+        ));
+      }
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/utils/colors.dart';
+import 'package:vi_word/utils/enums.dart';
 
 class BoardTile extends StatelessWidget {
   final Letter letter;

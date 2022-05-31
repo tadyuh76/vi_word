@@ -35,4 +35,9 @@ class Word {
       letters[lastLetterIndex] = Letter.empty();
     }
   }
+
+  @override
+  String toString() {
+    return 'Word($letters)';
+  }
 }

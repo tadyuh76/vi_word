@@ -129,7 +129,7 @@ class _KeyboardButton extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: isNotVietnamese
-                    ? [kDarkGrey, darken(kDarkGrey, 0.2)]
+                    ? [kMediumGrey, darken(kMediumGrey, 0.2)]
                     : [backgroundColor, darken(backgroundColor, 0.2)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
