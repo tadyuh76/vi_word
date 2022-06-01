@@ -187,15 +187,16 @@ class _WordRow extends StatelessWidget {
     fontSize: 16,
   );
   final _boldStyle = const TextStyle(
-      color: kGrey,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'Montserrat',
-      fontSize: 16);
+    color: Colors.white,
+    fontFamily: 'Montserrat',
+    fontSize: 16,
+  );
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     final double letterSize =
-        MediaQuery.of(context).size.width > kLayoutMaxWidth ? 50 : 40;
+        width > kLayoutMaxWidth ? 50 : (width - 6 * kDefaultPadding) / 6 - 8;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

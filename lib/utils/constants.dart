@@ -1,4 +1,4 @@
-const String appName = 'ViGuess';
+const String appName = 'ViWordle';
 
 // game constants
 const enterKey = 'enter';
@@ -25,7 +25,7 @@ final Map<String, List<List<String>>> keyWithAccents = {
   'o': [
     ['', 'ó', 'ò', 'ỏ', 'õ', 'ọ'],
     ['ô', 'ố', 'ồ', 'ổ', 'ỗ', 'ộ'],
-    ['ơ', 'ớ', 'ờ', 'ở', 'ỡ', 'ỡ'],
+    ['ơ', 'ớ', 'ờ', 'ở', 'ỡ', 'ợ'],
   ],
   'u': [
     ['', 'ú', 'ù', 'ủ', 'ũ', 'ụ'],

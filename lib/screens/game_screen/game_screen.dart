@@ -5,6 +5,7 @@ import 'package:vi_word/models/word.dart';
 import 'package:vi_word/screens/game_screen/app_bar.dart';
 import 'package:vi_word/services/game_service.dart';
 import 'package:vi_word/utils/breakpoints.dart';
+import 'package:vi_word/utils/color_changer.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
 import 'package:vi_word/utils/enums.dart';
@@ -24,24 +25,37 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  final _flipCardControllers = GameService().initFlipCardControllers;
   final _gameService = GameService();
-  final Set<Letter> specialKeys = {};
+
+  Word? get _currentWord =>
+      _currentIndex < _board.length ? _board[_currentIndex] : null;
 
   int _currentIndex = 0;
   GameStatus _gameStatus = GameStatus.playing;
   bool accentBoxVisible = false;
 
-  Word? get _currentWord =>
-      _currentIndex < _board.length ? _board[_currentIndex] : null;
-  String get _solution => _gameService.getWordOfTheDay();
-
-  late final _board = _gameService.initBoard;
-  late final _flipCardControllers = _gameService.initFlipCardControllers;
+  late List<Word> _board;
+  late String _solution;
+  late Set<Letter> specialKeys;
 
   @override
   void initState() {
     super.initState();
+
+    createNewGame();
     checkAlreadyPlayed();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    for (final row in _flipCardControllers) {
+      for (final controller in row) {
+        controller.controller?.dispose();
+      }
+    }
   }
 
   Future<void> checkAlreadyPlayed() async {
@@ -53,7 +67,7 @@ class _GameScreenState extends State<GameScreen> {
       showDialog(context: context, builder: (_) => const TutorialDialog());
       box.put('alreadyPlayed', true);
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('error checking alreadyPlayed: ${e.toString()}');
     }
   }
 
@@ -113,39 +127,58 @@ class _GameScreenState extends State<GameScreen> {
       );
     }
 
-    setState(() {
-      _gameStatus = GameStatus.submitting;
+    setState(() => _gameStatus = GameStatus.submitting);
 
-      bool isCorrect = _gameService.validate(_currentWord!, _solution);
+    bool isCorrect = _gameService.validate(_currentWord!, _solution);
 
-      if (isCorrect) {
-        showSnackBar(
-          context: context,
-          backgroundColor: kPrimary,
-          text: 'Bạn đã hoàn thành từ của ngày hôm nay !',
-          duration: const Duration(days: 1),
-        );
-        _gameStatus = GameStatus.won;
-      } else if (_currentIndex == _board.length - 1) {
-        showSnackBar(
-          context: context,
-          backgroundColor: kRed,
-          text: 'Từ của ngày hôm nay là $_solution',
-          duration: const Duration(days: 1),
-        );
-        _gameStatus = GameStatus.lost;
-      } else {
-        _gameStatus = GameStatus.playing;
-      }
+    if (isCorrect) {
+      showSnackBar(
+        context: context,
+        backgroundColor: kPrimary,
+        text: 'Bạn đã hoàn thành từ của ngày hôm nay !',
+      );
+      _gameStatus = GameStatus.won;
+    } else if (_currentIndex == _board.length - 1) {
+      showSnackBar(
+        context: context,
+        backgroundColor: kRed,
+        text: 'Từ của ngày hôm nay là $_solution',
+      );
+      _gameStatus = GameStatus.lost;
+    } else {
+      _gameStatus = GameStatus.playing;
+    }
 
-      _gameService.updateKeyboard(_currentWord!, specialKeys);
-      _currentIndex++;
-    });
-
+    _gameService.updateKeyboard(_currentWord!, specialKeys);
     _gameService.flipCards(
       _currentWord!,
-      _flipCardControllers[_currentIndex - 1],
+      _flipCardControllers[_currentIndex++],
     );
+
+    setState(() {});
+  }
+
+  void createNewGame([BuildContext? context]) {
+    _board = _gameService.initBoard;
+    _solution = _gameService.getWordOfTheDay();
+    _currentIndex = 0;
+    specialKeys = {};
+
+    for (final row in _flipCardControllers) {
+      for (final controller in row) {
+        controller.controller?.reset();
+      }
+    }
+
+    if (context != null) {
+      showSnackBar(
+        context: context,
+        backgroundColor: darken(kSecondary, 0.05),
+        text: 'Đã khởi tạo từ mới',
+      );
+    }
+
+    setState(() {});
   }
 
   @override
@@ -157,7 +190,7 @@ class _GameScreenState extends State<GameScreen> {
       onTap: () => Future.delayed(const Duration(milliseconds: 400),
           () => setState(() => accentBoxVisible = false)),
       child: Scaffold(
-        appBar: renderAppBar(context),
+        appBar: renderAppBar(context, createNewGame),
         body: ScreenBackground(
           child: Stack(
             children: [

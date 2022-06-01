@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flip_card/flip_card_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
 import 'package:vi_word/resources/words.dart';
@@ -14,20 +17,25 @@ class GameService {
     LetterStatus.correct: 4,
   };
 
-  get initBoard => List.generate(
+  List<Word> get initBoard => List.generate(
         6,
         (_) => Word(letters: List.generate(6, (_) => Letter.empty())),
       );
 
-  get initFlipCardControllers => List.generate(
+  List<List<FlipCardController>> get initFlipCardControllers => List.generate(
         6,
         (_) => List.generate(6, (_) => FlipCardController()),
       );
 
   String getWordOfTheDay() {
-    final now = DateTime.now();
-    final todayInDays = now.difference(DateTime(now.year, 1, 1, 0, 0)).inDays;
-    return words[todayInDays + (now.year - 2022) * 366];
+    // final now = DateTime.now();
+    // final todayInDays = now.difference(DateTime(now.year, 1, 1, 0, 0)).inDays;
+    // return words[todayInDays + (now.year - 2022) * 366];
+
+    final random = Random();
+    final randomIdx = random.nextInt(words.length);
+    debugPrint(randomIdx.toString());
+    return words[randomIdx];
   }
 
   bool checkVietnamese(Word word) {
@@ -39,6 +47,7 @@ class GameService {
     final letters = word.letters;
     String remainLettersToCheck = solution;
 
+    // check for correct and wrong accent keys
     for (int i = 0; i < letters.length; i++) {
       final Letter currentWordLetter = letters[i];
       final String currentSolutionLetter = solution[i];
@@ -61,6 +70,7 @@ class GameService {
       }
     }
 
+    // check for wrong position keys
     for (int i = 0; i < letters.length; i++) {
       final Letter currentGuessLetter = letters[i];
       final String currentSolutionLetter = solution[i];

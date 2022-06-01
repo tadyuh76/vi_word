@@ -26,16 +26,12 @@ class HomeScreen extends StatelessWidget {
                   appName.toUpperCase(),
                   style: const TextStyle(
                     fontSize: 48,
-                    color: Colors.white,
+                    color: kTernary,
                     letterSpacing: 4,
                     shadows: [
                       BoxShadow(
-                        color: Colors.white,
+                        color: kTernary,
                         blurRadius: 4,
-                      ),
-                      BoxShadow(
-                        color: kSecondary,
-                        blurRadius: 16,
                       ),
                     ],
                   ),

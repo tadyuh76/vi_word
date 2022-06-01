@@ -90,6 +90,7 @@ class _KeyboardButton extends StatelessWidget {
       keyVal: enterKey,
       onTap: onTap,
       icon: Icons.keyboard_double_arrow_right,
+      backgroundColor: kMediumGrey,
     );
   }
 
@@ -97,7 +98,8 @@ class _KeyboardButton extends StatelessWidget {
     return _KeyboardButton(
       keyVal: delKey,
       onTap: onTap,
-      icon: Icons.keyboard_return,
+      icon: Icons.backspace,
+      backgroundColor: kMediumGrey,
     );
   }
 
@@ -137,7 +139,7 @@ class _KeyboardButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
             child: icon != null
-                ? Icon(icon, size: 32)
+                ? Icon(icon, size: 32, color: Colors.white)
                 : Text(
                     keyVal,
                     style: const TextStyle(fontSize: 20),

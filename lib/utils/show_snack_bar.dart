@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:vi_word/utils/color_changer.dart';
+import 'package:vi_word/utils/colors.dart';
 
 void showSnackBar({
   required BuildContext context,
@@ -36,7 +37,7 @@ void showSnackBar({
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(width: 48),
+                const SizedBox(width: 60),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -80,11 +81,11 @@ void showSnackBar({
                   height: 30,
                   color: darken(backgroundColor, 0.3),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 5),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
                   child: Icon(
-                    Icons.close,
-                    size: 20,
+                    backgroundColor == kRed ? Icons.close : Icons.check,
+                    size: 18,
                   ),
                 ),
               ],
@@ -97,7 +98,11 @@ void showSnackBar({
 
   // prevent spam
   _closeSnackBars(context);
-  showTopSnackBar(context, snackBar);
+  showTopSnackBar(
+    context,
+    snackBar,
+    displayDuration: duration ?? const Duration(seconds: 3),
+  );
 }
 
 void _closeSnackBars(BuildContext context) {
