@@ -1,3 +1,4 @@
+import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vi_word/models/letter.dart';
@@ -25,7 +26,8 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  final _flipCardControllers = GameService().initFlipCardControllers;
+  final List<List<FlipCardController>> _flipCardControllers =
+      GameService().initFlipCardControllers;
   final _gameService = GameService();
 
   Word? get _currentWord =>
@@ -45,17 +47,6 @@ class _GameScreenState extends State<GameScreen> {
 
     createNewGame();
     checkAlreadyPlayed();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    for (final row in _flipCardControllers) {
-      for (final controller in row) {
-        controller.controller?.dispose();
-      }
-    }
   }
 
   Future<void> checkAlreadyPlayed() async {
@@ -162,6 +153,7 @@ class _GameScreenState extends State<GameScreen> {
     _board = _gameService.initBoard;
     _solution = _gameService.getWordOfTheDay();
     _currentIndex = 0;
+    _gameStatus = GameStatus.playing;
     specialKeys = {};
 
     for (final row in _flipCardControllers) {
@@ -217,7 +209,7 @@ class _GameScreenState extends State<GameScreen> {
                 onTap: onAccentTap,
                 keyVal: lastLetter.val,
                 visible: accentBoxVisible,
-              )
+              ),
             ],
           ),
         ),

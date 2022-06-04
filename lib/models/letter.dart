@@ -15,7 +15,7 @@ class Letter {
       case LetterStatus.correct:
         return kPrimary.withAlpha(220);
       case LetterStatus.wrongAccent:
-        return kSecondary.withAlpha(230);
+        return kSecondary.withAlpha(220);
       case LetterStatus.wrongPosition:
         return kTernary.withAlpha(220);
       case LetterStatus.notInWord:

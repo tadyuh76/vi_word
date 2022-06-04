@@ -13,7 +13,7 @@ class PlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AvatarGlow(
-      glowColor: kTernary,
+      glowColor: kPink,
       endRadius: 160.0,
       child: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(GameScreen.routeName),
@@ -23,11 +23,11 @@ class PlayButton extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: kBackground,
-            border: Border.all(color: kTernary, width: 4),
+            border: Border.all(color: kPink, width: 4),
             borderRadius: BorderRadius.circular(100),
             boxShadow: const [
-              BoxShadow(color: kTernary, blurRadius: 10),
-              BoxShadow(color: kTernary, blurRadius: 20, inset: true),
+              BoxShadow(color: kPink, blurRadius: 10),
+              BoxShadow(color: kPink, blurRadius: 20, inset: true),
             ],
           ),
           child: Padding(

@@ -34,7 +34,7 @@ class GameService {
 
     final random = Random();
     final randomIdx = random.nextInt(words.length);
-    debugPrint(randomIdx.toString());
+    debugPrint(words[randomIdx]);
     return words[randomIdx];
   }
 
@@ -116,7 +116,7 @@ class GameService {
     List<FlipCardController> flipCardControllers,
   ) {
     currentWord.letters.asMap().forEach((i, element) async {
-      await Future.delayed(Duration(milliseconds: (i + 1) * 200),
+      await Future.delayed(Duration(milliseconds: i * 150),
           () => flipCardControllers[i].toggleCard());
     });
   }

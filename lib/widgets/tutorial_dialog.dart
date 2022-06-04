@@ -12,14 +12,16 @@ class TutorialDialog extends StatelessWidget {
 
   final _normalStyle = const TextStyle(
     color: kGrey,
-    fontFamily: 'Montserrat',
-    fontSize: 16,
+    // fontFamily: 'Qu',
+    fontFamily: 'Quicksand',
+    fontSize: 18,
   );
   final _boldStyle = const TextStyle(
     color: kGrey,
     fontWeight: FontWeight.bold,
-    fontFamily: 'Montserrat',
-    fontSize: 16,
+    fontFamily: 'Quicksand',
+    // fontFamily: 'Montserrat',
+    fontSize: 18,
   );
 
   @override
@@ -106,11 +108,11 @@ class TutorialDialog extends StatelessWidget {
                     _WordRow(
                       letters: [
                         Letter(val: 'đ', status: LetterStatus.correct),
-                        Letter(val: 'e', status: LetterStatus.notInWord),
-                        Letter(val: 'n', status: LetterStatus.notInWord),
-                        Letter(val: 't', status: LetterStatus.notInWord),
-                        Letter(val: 'ố', status: LetterStatus.notInWord),
-                        Letter(val: 'i', status: LetterStatus.notInWord)
+                        Letter(val: 'e'),
+                        Letter(val: 'n'),
+                        Letter(val: 't'),
+                        Letter(val: 'ố'),
+                        Letter(val: 'i')
                       ],
                       text1: 'Chữ',
                       text2: 'Đ',
@@ -118,12 +120,12 @@ class TutorialDialog extends StatelessWidget {
                     ),
                     _WordRow(
                       letters: [
-                        Letter(val: 'd', status: LetterStatus.notInWord),
+                        Letter(val: 'd'),
                         Letter(val: 'a', status: LetterStatus.wrongAccent),
-                        Letter(val: 'd', status: LetterStatus.notInWord),
-                        Letter(val: 'i', status: LetterStatus.notInWord),
-                        Letter(val: 'ế', status: LetterStatus.notInWord),
-                        Letter(val: 't', status: LetterStatus.notInWord)
+                        Letter(val: 'd'),
+                        Letter(val: 'i'),
+                        Letter(val: 'ế'),
+                        Letter(val: 't')
                       ],
                       text1: 'Chữ',
                       text2: 'A',
@@ -132,12 +134,12 @@ class TutorialDialog extends StatelessWidget {
                     ),
                     _WordRow(
                       letters: [
-                        Letter(val: 'c', status: LetterStatus.notInWord),
-                        Letter(val: 'o', status: LetterStatus.notInWord),
-                        Letter(val: 'n', status: LetterStatus.notInWord),
-                        Letter(val: 'c', status: LetterStatus.notInWord),
+                        Letter(val: 'c'),
+                        Letter(val: 'o'),
+                        Letter(val: 'n'),
+                        Letter(val: 'c'),
                         Letter(val: 'á', status: LetterStatus.wrongPosition),
-                        Letter(val: 'o', status: LetterStatus.notInWord)
+                        Letter(val: 'o')
                       ],
                       text1: 'Chữ',
                       text2: 'A (không xét dấu của chữ này)',
@@ -147,9 +149,9 @@ class TutorialDialog extends StatelessWidget {
                       letters: [
                         Letter(val: 'á', status: LetterStatus.notInWord),
                         Letter(val: 'o', status: LetterStatus.notInWord),
-                        Letter(val: 'b', status: LetterStatus.correct),
+                        Letter(val: 'b'),
                         Letter(val: 'a', status: LetterStatus.notInWord),
-                        Letter(val: 'l', status: LetterStatus.wrongPosition),
+                        Letter(val: 'l'),
                         Letter(val: 'ỗ', status: LetterStatus.notInWord)
                       ],
                       text1: 'Chữ',
@@ -183,13 +185,16 @@ class _WordRow extends StatelessWidget {
 
   final _normalStyle = const TextStyle(
     color: kGrey,
-    fontFamily: 'Montserrat',
-    fontSize: 16,
+    fontFamily: 'Quicksand',
+    // fontFamily: 'Montserrat',
+    fontSize: 18,
   );
   final _boldStyle = const TextStyle(
-    color: Colors.white,
-    fontFamily: 'Montserrat',
-    fontSize: 16,
+    fontFamily: 'Quicksand',
+    // fontFamily: 'Montserrat',
+    color: kGrey,
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
   );
 
   @override
@@ -199,10 +204,10 @@ class _WordRow extends StatelessWidget {
         width > kLayoutMaxWidth ? 50 : (width - 6 * kDefaultPadding) / 6 - 8;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: letters

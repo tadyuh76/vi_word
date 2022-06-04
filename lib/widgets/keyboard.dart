@@ -139,10 +139,10 @@ class _KeyboardButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
             child: icon != null
-                ? Icon(icon, size: 32, color: Colors.white)
+                ? Icon(icon, size: 26, color: Colors.white)
                 : Text(
                     keyVal,
-                    style: const TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: keyWidth * 0.5),
                   ),
           ),
         ),

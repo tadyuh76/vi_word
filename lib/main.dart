@@ -18,20 +18,20 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaxWidthContainer(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          fontFamily: 'Montserrat',
-        ).copyWith(
-          scaffoldBackgroundColor: kBackground,
-        ),
-        routes: {
-          HomeScreen.routeName: (context) => const HomeScreen(),
-          GameScreen.routeName: (context) => const GameScreen(),
-        },
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(brightness: Brightness.dark, fontFamily: 'Quicksand')
+          .copyWith(scaffoldBackgroundColor: kBackground),
+      routes: {
+        HomeScreen.routeName: (context) => const HomeScreen(),
+        GameScreen.routeName: (context) => const GameScreen(),
+      },
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
     );
   }
 }
