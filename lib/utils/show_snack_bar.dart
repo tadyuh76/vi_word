@@ -23,6 +23,7 @@ void showSnackBar({
               height: 50,
               alignment: Alignment.center,
               constraints: const BoxConstraints(maxWidth: kLayoutMaxWidth),
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 gradient: LinearGradient(
@@ -40,7 +41,7 @@ void showSnackBar({
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(width: 60),
+                  const SizedBox(width: 30),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

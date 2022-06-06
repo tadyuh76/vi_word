@@ -6,6 +6,7 @@ import 'package:vi_word/screens/home_screen/tab_item.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
+import 'package:vi_word/widgets/dialogs/settings_dialog.dart';
 import 'package:vi_word/widgets/screen_background.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -45,17 +46,20 @@ class HomeScreen extends StatelessWidget {
                     TabItem(
                       onTap: () {},
                       icon: SvgPicture.asset('assets/icons/profile.svg'),
-                      text: "Profile",
+                      text: "HỒ SƠ",
                     ),
                     TabItem(
                       onTap: () {},
                       icon: SvgPicture.asset('assets/icons/diamond.svg'),
-                      text: "About",
+                      text: "THÊM",
                     ),
                     TabItem(
-                      onTap: () {},
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => const SettingsDialog(),
+                      ),
                       icon: SvgPicture.asset('assets/icons/settings.svg'),
-                      text: "Settings",
+                      text: "CÀI ĐẶT",
                     ),
                   ],
                 ),

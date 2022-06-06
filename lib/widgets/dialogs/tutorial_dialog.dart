@@ -6,6 +6,7 @@ import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
 import 'package:vi_word/utils/enums.dart';
 import 'package:vi_word/widgets/board_tile.dart';
+import 'package:vi_word/widgets/custom_close_button.dart';
 
 class TutorialDialog extends StatelessWidget {
   const TutorialDialog({Key? key}) : super(key: key);
@@ -54,24 +55,7 @@ class TutorialDialog extends StatelessWidget {
                   style: TextStyle(color: kGrey, fontSize: 20),
                 ),
                 const Spacer(),
-                GestureDetector(
-                  onTap: Navigator.of(context).pop,
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    padding: const EdgeInsets.all(1),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      border: Border.all(color: kMediumGrey, width: 1),
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: kGrey,
-                      size: 20,
-                    ),
-                  ),
-                )
+                const CustomCloseButton(),
               ],
             ),
             const Divider(
@@ -201,7 +185,7 @@ class _WordRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final double letterSize =
-        width > kLayoutMaxWidth ? 50 : (width - 6 * kDefaultPadding) / 6 - 8;
+        width > kLayoutMaxWidth ? 50 : (width - 5 * kDefaultPadding) / 6 - 8;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

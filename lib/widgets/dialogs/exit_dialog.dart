@@ -18,11 +18,10 @@ class ExitDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: kLayoutMaxWidth),
-        child: FractionallySizedBox(
-          heightFactor: 0.5,
-          widthFactor: 0.9,
+      child: FractionallySizedBox(
+        heightFactor: 0.5,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: kLayoutMaxWidth),
           child: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(
@@ -95,24 +94,27 @@ class _CircleButtonState extends State<CircleButton> {
   IconData get icon => widget.isClose ? Icons.close : Icons.check;
   String get text => widget.isClose ? 'Hủy' : 'OK';
 
+  void enableHoverEffect(bool val) => setState(() => isHover = val);
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          width: 50,
-          height: 50,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: isHover ? color : Colors.transparent,
-            shape: BoxShape.circle,
-            border: Border.all(color: color),
-          ),
-          child: InkWell(
-            onHover: (val) => setState(() => isHover = val),
-            onTap: widget.onTap,
+        InkWell(
+          onHover: enableHoverEffect,
+          onHighlightChanged: (_) => enableHoverEffect(!isHover),
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 1),
+            width: 50,
+            height: 50,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isHover ? color : Colors.transparent,
+              shape: BoxShape.circle,
+              border: Border.all(color: color),
+            ),
             child: Icon(
               icon,
               color: isHover ? Colors.white : color,

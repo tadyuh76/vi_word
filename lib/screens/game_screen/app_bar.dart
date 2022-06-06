@@ -4,8 +4,8 @@ import 'package:vi_word/screens/home_screen/home_screen.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart' as constants;
-import 'package:vi_word/widgets/exit_dialog.dart';
-import 'package:vi_word/widgets/tutorial_dialog.dart';
+import 'package:vi_word/widgets/dialogs/exit_dialog.dart';
+import 'package:vi_word/widgets/dialogs/tutorial_dialog.dart';
 
 AppBar renderAppBar(
   BuildContext context,
@@ -29,65 +29,80 @@ AppBar renderAppBar(
         )
       ],
     ),
-    leading: Container(
-      alignment: Alignment.center,
-      child: GestureDetector(
-        onTap: () => showDialog(
-          context: context,
-          builder: (context) => ExitDialog(
-            title: 'Bạn có chắc chắn muốn thoát ?',
-            subtitle: 'Tiến độ trò chơi hiện tại sẽ không được lưu',
-            onTap: () => Navigator.of(context).popUntil(
-              ModalRoute.withName(HomeScreen.routeName),
-            ),
+    leading: _AppBarButton(
+      icon: Icons.chevron_left,
+      iconSize: 32,
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => ExitDialog(
+          title: 'Bạn có chắc chắn muốn thoát ?',
+          subtitle: 'Tiến độ trò chơi hiện tại sẽ không được lưu',
+          onTap: () => Navigator.of(context).popUntil(
+            ModalRoute.withName(HomeScreen.routeName),
           ),
-        ),
-        child: const FaIcon(
-          FontAwesomeIcons.chevronLeft,
-          size: 20,
-          color: kGrey,
         ),
       ),
     ),
     actions: [
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => ExitDialog(
-              title: 'Bạn có chắc chắn muốn chơi lại ?',
-              subtitle: 'Tiến độ trò chơi sẽ được làm mới',
-              onTap: () {
-                Navigator.of(context).pop();
-                createNewGame(context);
-              },
-            ),
-          ),
-          child: const FaIcon(
-            FontAwesomeIcons.repeat,
-            size: 20,
-            color: kGrey,
+      _AppBarButton(
+        icon: FontAwesomeIcons.repeat,
+        iconSize: 22,
+        onTap: () => showDialog(
+          context: context,
+          builder: (context) => ExitDialog(
+            title: 'Bạn có chắc chắn muốn chơi lại ?',
+            subtitle: 'Tiến độ trò chơi sẽ được làm mới',
+            onTap: () {
+              Navigator.of(context).pop();
+              createNewGame(context);
+            },
           ),
         ),
       ),
-      Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.only(right: kDefaultPadding),
-        child: GestureDetector(
-          onTap: () => showDialog(
-            context: context,
-            barrierColor: kBackground.withOpacity(0.3),
-            builder: (context) => const TutorialDialog(),
-          ),
-          child: const FaIcon(
-            FontAwesomeIcons.circleQuestion,
-            size: 22,
-            color: kGrey,
-          ),
+      _AppBarButton(
+        icon: FontAwesomeIcons.circleQuestion,
+        iconSize: 24,
+        onTap: () => showDialog(
+          context: context,
+          barrierColor: kBackground.withOpacity(0.3),
+          builder: (context) => const TutorialDialog(),
         ),
-      )
+      ),
     ],
   );
+}
+
+class _AppBarButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final double iconSize;
+
+  const _AppBarButton({
+    Key? key,
+    required this.icon,
+    required this.onTap,
+    required this.iconSize,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      // padding: const EdgeInsets.only(right: kDefaultPadding / 2),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(100),
+        onTap: onTap,
+        child: Container(
+          width: 50,
+          height: 50,
+          alignment: Alignment.center,
+          child: FaIcon(
+            icon,
+            color: kGrey,
+            size: iconSize,
+          ),
+        ),
+      ),
+    );
+  }
 }

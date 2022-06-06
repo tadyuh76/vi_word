@@ -38,7 +38,7 @@ class GameService {
     return words[randomIdx];
   }
 
-  bool checkVietnamese(Word word) {
+  bool dictionaryHas(Word word) {
     return words.contains(word.wordString());
   }
 

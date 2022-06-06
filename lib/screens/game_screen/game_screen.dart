@@ -13,9 +13,9 @@ import 'package:vi_word/utils/enums.dart';
 import 'package:vi_word/utils/show_snack_bar.dart';
 import 'package:vi_word/widgets/accent_box.dart';
 import 'package:vi_word/widgets/board.dart';
+import 'package:vi_word/widgets/dialogs/tutorial_dialog.dart';
 import 'package:vi_word/widgets/keyboard.dart';
 import 'package:vi_word/widgets/screen_background.dart';
-import 'package:vi_word/widgets/tutorial_dialog.dart';
 
 class GameScreen extends StatefulWidget {
   static const routeName = '/game';
@@ -109,8 +109,8 @@ class _GameScreenState extends State<GameScreen> {
       );
     }
 
-    bool isVietnamese = _gameService.checkVietnamese(_currentWord!);
-    if (!isVietnamese) {
+    bool inDictionary = _gameService.dictionaryHas(_currentWord!);
+    if (!inDictionary) {
       return showSnackBar(
         context: context,
         backgroundColor: kRed,
