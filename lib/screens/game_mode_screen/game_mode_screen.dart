@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vi_word/screens/game_screen/game_screen.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
-import 'package:vi_word/widgets/screen_background.dart';
 
 class GameModeScreen extends StatelessWidget {
   static const routeName = '/gamemode';
@@ -13,56 +11,58 @@ class GameModeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
-                Lottie.asset(
-                  'assets/game_console.json',
-                  width: 160,
-                  height: 160,
-                ),
-                const Text(
-                  'Chọn chế độ chơi',
-                  style: TextStyle(color: kGrey, fontSize: 24),
-                ),
-                const SizedBox(height: kDefaultPadding * 2),
-                _GameModeButton(
-                  title: 'Cổ điển',
-                  subtitle: 'Một người chơi',
-                  onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(GameScreen.routeName),
-                ),
-                const SizedBox(height: kDefaultPadding),
-                _GameModeButton(
-                  title: 'Online',
-                  subtitle: 'Nhiều người chơi',
-                  onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(GameScreen.routeName),
-                ),
-                const Spacer(),
-              ],
-            ),
-          ),
-          Positioned(
-            top: kDefaultPadding,
-            left: kDefaultPadding,
-            child: InkWell(
-              onTap: Navigator.of(context).pop,
-              borderRadius: BorderRadius.circular(50),
-              child: const SizedBox(
-                width: 50,
-                height: 50,
-                child: Icon(Icons.chevron_left, size: 32),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  Lottie.asset(
+                    'assets/game_console.json',
+                    width: 160,
+                    height: 160,
+                  ),
+                  const Text(
+                    'Chọn chế độ chơi',
+                    style: TextStyle(color: kGrey, fontSize: 24),
+                  ),
+                  const SizedBox(height: kDefaultPadding * 2),
+                  _GameModeButton(
+                    title: 'Cổ điển',
+                    subtitle: 'Một người chơi',
+                    onTap: () => Navigator.of(context)
+                        .pushReplacementNamed(GameScreen.routeName),
+                  ),
+                  const SizedBox(height: kDefaultPadding),
+                  _GameModeButton(
+                    title: 'Online',
+                    subtitle: 'Nhiều người chơi',
+                    onTap: () => Navigator.of(context)
+                        .pushReplacementNamed(GameScreen.routeName),
+                  ),
+                  const Spacer(),
+                ],
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: kDefaultPadding,
+              left: kDefaultPadding,
+              child: InkWell(
+                onTap: Navigator.of(context).pop,
+                borderRadius: BorderRadius.circular(50),
+                child: const SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Icon(Icons.chevron_left, size: 32),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

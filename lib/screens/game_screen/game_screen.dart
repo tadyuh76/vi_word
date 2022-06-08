@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
 import 'package:vi_word/screens/game_screen/app_bar.dart';
+import 'package:vi_word/services/audio_service.dart';
 import 'package:vi_word/services/game_service.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/color_changer.dart';
@@ -14,6 +15,7 @@ import 'package:vi_word/utils/show_snack_bar.dart';
 import 'package:vi_word/widgets/accent_box.dart';
 import 'package:vi_word/widgets/board.dart';
 import 'package:vi_word/widgets/dialogs/tutorial_dialog.dart';
+import 'package:vi_word/widgets/dialogs/won_dialog.dart';
 import 'package:vi_word/widgets/keyboard.dart';
 import 'package:vi_word/widgets/screen_background.dart';
 
@@ -29,6 +31,7 @@ class _GameScreenState extends State<GameScreen> {
   final List<List<FlipCardController>> _flipCardControllers =
       GameService().initFlipCardControllers;
   final _gameService = GameService();
+  final _audioService = AudioService();
 
   Word? get _currentWord =>
       _currentIndex < _board.length ? _board[_currentIndex] : null;
@@ -72,6 +75,8 @@ class _GameScreenState extends State<GameScreen> {
         accentBoxVisible = true;
       }
     });
+
+    _audioService.playSound(Sound.tapped);
   }
 
   void onLimitedKeyTap(String key) {
@@ -82,6 +87,8 @@ class _GameScreenState extends State<GameScreen> {
       backgroundColor: kRed,
       text: 'Chữ "$key" không có trong Tiếng Việt !',
     );
+
+    _audioService.playSound(Sound.tapped);
   }
 
   void onAccentTap(String valWithAccent) {
@@ -90,12 +97,16 @@ class _GameScreenState extends State<GameScreen> {
         ..removeLetter()
         ..addLetter(valWithAccent);
     });
+
+    _audioService.playSound(Sound.tapped);
   }
 
   void onDeleteTap() {
     if (_gameStatus != GameStatus.playing) return;
 
     setState(() => _currentWord?.removeLetter());
+
+    _audioService.playSound(Sound.tapped);
   }
 
   Future<void> onEnterTap() async {
@@ -121,15 +132,21 @@ class _GameScreenState extends State<GameScreen> {
     setState(() => _gameStatus = GameStatus.submitting);
 
     bool isCorrect = _gameService.validate(_currentWord!, _solution);
+    bool isLost = _currentIndex == _board.length - 1;
 
     if (isCorrect) {
-      showSnackBar(
-        context: context,
-        backgroundColor: kPrimary,
-        text: 'Bạn đã hoàn thành từ của ngày hôm nay !',
+      Future.delayed(
+        const Duration(milliseconds: 1200),
+        () => showDialog(
+          context: context,
+          builder: (context) => WonDialog(
+            createNewGame: () => createNewGame(context),
+          ),
+        ),
       );
+
       _gameStatus = GameStatus.won;
-    } else if (_currentIndex == _board.length - 1) {
+    } else if (isLost) {
       showSnackBar(
         context: context,
         backgroundColor: kRed,
@@ -146,6 +163,7 @@ class _GameScreenState extends State<GameScreen> {
       _flipCardControllers[_currentIndex++],
     );
 
+    _audioService.playSound(Sound.flipCards);
     setState(() {});
   }
 

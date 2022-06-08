@@ -72,21 +72,22 @@ class GameService {
 
     // check for wrong position keys
     for (int i = 0; i < letters.length; i++) {
-      final Letter currentGuessLetter = letters[i];
-      final String currentSolutionLetter = solution[i];
-      final String removedDiacriticsGuessLetter =
-          removeDiacritics(currentGuessLetter.val);
+      final Letter guessLetter = letters[i];
+      final String solutionLetter = solution[i];
+      final String rdGuessLetter = removeDiacritics(guessLetter.val);
 
-      bool isCorrect = currentGuessLetter.val == currentSolutionLetter;
-      bool isWrongAccent = removeDiacritics(currentSolutionLetter) ==
-          removedDiacriticsGuessLetter;
-      bool isWrongPosition = removeDiacritics(remainLettersToCheck)
-          .contains(removedDiacriticsGuessLetter);
+      bool isCorrect = guessLetter.val == solutionLetter;
+      bool isWrongAccent = removeDiacritics(solutionLetter) == rdGuessLetter;
+      bool isWrongPosition =
+          removeDiacritics(remainLettersToCheck).contains(rdGuessLetter);
 
       if (isWrongPosition && !isCorrect && !isWrongAccent) {
+        final indexToReplace =
+            removeDiacritics(remainLettersToCheck).indexOf(rdGuessLetter);
+
         remainLettersToCheck = remainLettersToCheck.replaceFirst(
-            removedDiacriticsGuessLetter, ' ', i);
-        currentGuessLetter.copyWith(status: LetterStatus.wrongPosition);
+            remainLettersToCheck[indexToReplace], ' ');
+        guessLetter.copyWith(status: LetterStatus.wrongPosition);
       }
     }
 

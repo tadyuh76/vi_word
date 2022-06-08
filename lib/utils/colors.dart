@@ -5,7 +5,7 @@ const kSecondary = Color(0xFF08F7FE);
 const kTernary = Color(0xFFF9B231);
 
 const kPurple = Color(0xFF6A4BDE);
-const kPink = Color(0xFFF030E9);
+const kPink = Color(0xFFF02FE9);
 const kRed = Color(0xFFFB6862);
 
 const kGrey = Color(0xFFC1C7C9);

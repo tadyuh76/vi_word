@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vi_word/screens/home_screen/home_screen.dart';
-import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart' as constants;
 import 'package:vi_word/widgets/dialogs/exit_dialog.dart';

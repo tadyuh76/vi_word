@@ -8,6 +8,7 @@ import 'package:vi_word/widgets/max_width_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
   await Hive.openBox('gameData');
 
