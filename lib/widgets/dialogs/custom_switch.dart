@@ -37,7 +37,7 @@ class _CustomSwitchState extends State<CustomSwitch> {
             height: 30,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: active ? kSecondary : kGrey,
+              color: active ? kWrongAccentColor : kGrey,
             ),
           ),
         ),

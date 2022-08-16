@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:vi_word/screens/home_screen/home_screen.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/color_changer.dart';
 import 'package:vi_word/utils/colors.dart';
 
-class WonDialog extends StatelessWidget {
+class EndDialog extends StatelessWidget {
   final VoidCallback createNewGame;
-  const WonDialog({Key? key, required this.createNewGame}) : super(key: key);
+  final String solution;
+  final int guesses;
+  const EndDialog({
+    Key? key,
+    required this.createNewGame,
+    required this.solution,
+    required this.guesses,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: const EdgeInsets.all(kDefaultPadding),
       backgroundColor: Colors.transparent,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: kLayoutMaxWidth),
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            color: kPrimary,
+            color: kCorrectColor,
             borderRadius: BorderRadius.circular(kDefaultPadding),
           ),
           child: Column(
@@ -28,39 +35,34 @@ class WonDialog extends StatelessWidget {
                 padding: const EdgeInsets.all(kDefaultPadding),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text(
-                      'THẮNG RỒI!',
+                  children: [
+                    const Text(
+                      'ĐÚNG RỒI!',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         letterSpacing: 2,
                       ),
                     ),
-                    SizedBox(height: kDefaultPadding),
-                    Text(
-                      'Bạn đã đoán được từ <solution> trong <guess> lượt thử!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    )
+                    const SizedBox(height: kDefaultPadding),
+                    _StatisticsItem(text: 'Đáp án', data: solution),
+                    const SizedBox(height: kDefaultPadding / 2),
+                    _StatisticsItem(text: 'Số lượt đã đoán', data: '$guesses'),
                   ],
                 ),
               ),
               Container(
                 height: 80,
-                decoration: BoxDecoration(color: darken(kPrimary)),
+                decoration: BoxDecoration(color: darken(kCorrectColor)),
                 child: Row(
                   children: [
                     _CustomIconButton(
-                      icon: Icons.home,
+                      icon: Icons.arrow_back_rounded,
                       text: 'Trở về',
-                      onTap: () => Navigator.of(context)
-                          .popUntil(ModalRoute.withName(HomeScreen.routeName)),
+                      onTap: () => Navigator.of(context).pop(),
                     ),
                     _CustomIconButton(
-                      icon: Icons.repeat,
+                      icon: Icons.repeat_rounded,
                       text: 'Chơi lại',
                       onTap: () {
                         Navigator.of(context).pop();
@@ -73,6 +75,45 @@ class WonDialog extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _StatisticsItem extends StatelessWidget {
+  final String text;
+  final String data;
+
+  const _StatisticsItem({
+    Key? key,
+    required this.text,
+    required this.data,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 240,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            data.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.white,
+              letterSpacing: 2,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -105,8 +146,8 @@ class _CustomIconButton extends StatelessWidget {
               Text(
                 ' $text',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.6),
                   fontSize: 14,
                 ),
               )

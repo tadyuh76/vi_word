@@ -119,7 +119,6 @@ class _GameModeButtonState extends State<_GameModeButton> {
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Quicksand',
                   ),
                 ),
                 Text(

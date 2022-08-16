@@ -1,11 +1,12 @@
 import 'dart:math';
+
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
 import 'package:vi_word/utils/breakpoints.dart';
-import 'package:vi_word/widgets/board_tile.dart';
+import 'package:vi_word/widgets/game/board_tile.dart';
 
 class Board extends StatelessWidget {
   final List<Word> board;
@@ -20,12 +21,19 @@ class Board extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
         child: LayoutBuilder(
           builder: (context, constraints) {
+            // Distribute BoardTile size based on the smallest screen's dimension
             final baseSize = min(
                 min(constraints.maxHeight, constraints.maxWidth),
                 kLayoutMaxWidth);
+
+            // In case the available height is smallest, distribute board size for 7 tiles
+            // Otherwise, distribute for 6 tiles (horizontal)
+            final boardSize = baseSize == constraints.maxHeight
+                ? (baseSize / 7) - 6
+                : (baseSize / 6) - 6;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,11 +54,11 @@ class Board extends StatelessWidget {
                                     flipOnTouch: false,
                                     front: BoardTile(
                                       letter: Letter(val: letter.val),
-                                      size: (baseSize / 6) - 10,
+                                      size: boardSize,
                                     ),
                                     back: BoardTile(
                                       letter: letter,
-                                      size: (baseSize / 6) - 10,
+                                      size: boardSize,
                                     ),
                                   ),
                                 ))

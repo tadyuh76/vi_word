@@ -34,7 +34,7 @@ void showSnackBar({
                 boxShadow: [
                   BoxShadow(
                     color: backgroundColor,
-                    blurRadius: 10,
+                    blurRadius: 8,
                   )
                 ],
               ),
@@ -66,7 +66,7 @@ void showSnackBar({
                 borderRadius:
                     const BorderRadius.only(bottomLeft: Radius.circular(12)),
                 child: SvgPicture.asset(
-                  'assets/bubbles.svg',
+                  'assets/icons/bubbles.svg',
                   height: 36,
                   width: 36,
                   color: darken(backgroundColor, 0.3),
@@ -80,7 +80,7 @@ void showSnackBar({
                 alignment: Alignment.center,
                 children: [
                   SvgPicture.asset(
-                    'assets/fail.svg',
+                    'assets/icons/fail.svg',
                     width: 30,
                     height: 30,
                     color: darken(backgroundColor, 0.3),

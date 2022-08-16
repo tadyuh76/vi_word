@@ -1,6 +1,11 @@
+import 'package:hive/hive.dart';
 import 'package:vi_word/models/letter.dart';
 
+part 'word.g.dart';
+
+@HiveType(typeId: 1)
 class Word {
+  @HiveField(0)
   final List<Letter> letters;
 
   Word({required this.letters});
@@ -16,7 +21,7 @@ class Word {
     );
   }
 
-  String wordString() => letters.map((e) => e.val).join('');
+  String wordString() => letters.map((e) => e.val).join();
 
   bool addLetter(String val) {
     bool added = false;
@@ -34,10 +39,5 @@ class Word {
     if (lastLetterIndex != -1) {
       letters[lastLetterIndex] = Letter.empty();
     }
-  }
-
-  @override
-  String toString() {
-    return 'Word($letters)';
   }
 }

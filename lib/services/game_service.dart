@@ -1,10 +1,10 @@
 import 'dart:math';
-
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
 import 'package:vi_word/resources/words.dart';
+import 'package:vi_word/utils/constants.dart';
 import 'package:vi_word/utils/enums.dart';
 import 'package:vi_word/utils/remove_diacritics.dart';
 
@@ -18,12 +18,12 @@ class GameService {
   };
 
   List<Word> get initBoard => List.generate(
-        6,
+        numberOfGuess,
         (_) => Word(letters: List.generate(6, (_) => Letter.empty())),
       );
 
   List<List<FlipCardController>> get initFlipCardControllers => List.generate(
-        6,
+        numberOfGuess,
         (_) => List.generate(6, (_) => FlipCardController()),
       );
 
@@ -34,7 +34,7 @@ class GameService {
 
     final random = Random();
     final randomIdx = random.nextInt(words.length);
-    debugPrint(words[randomIdx]);
+    debugPrint('Today word is: ${words[randomIdx]}');
     return words[randomIdx];
   }
 
@@ -94,7 +94,7 @@ class GameService {
     return correct == letters.length;
   }
 
-  void updateKeyboard(Word enteredWord, Set<Letter> specialKeys) {
+  void updateKeyboard(Word enteredWord, List<Letter> specialKeys) {
     for (Letter enteredLetter in enteredWord.letters) {
       final removedAccentLetterVal = removeDiacritics(enteredLetter.val);
       final currentSavedKey = specialKeys.firstWhere(
@@ -112,11 +112,8 @@ class GameService {
     }
   }
 
-  void flipCards(
-    Word currentWord,
-    List<FlipCardController> flipCardControllers,
-  ) {
-    currentWord.letters.asMap().forEach((i, element) async {
+  void flipWordRow(List<FlipCardController> flipCardControllers) {
+    flipCardControllers.asMap().forEach((i, element) async {
       await Future.delayed(Duration(milliseconds: i * 150),
           () => flipCardControllers[i].toggleCard());
     });

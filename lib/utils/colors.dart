@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-const kPrimary = Color(0xFF26D07C);
-const kSecondary = Color(0xFF08F7FE);
-const kTernary = Color(0xFFF9B231);
+const kCorrectColor = Color(0xFF26D07C);
+const kWrongAccentColor = Color(0xFF08F7FE);
+const kWrongPositionColor = Color(0xFFF9B231);
 
-const kPurple = Color(0xFF6A4BDE);
-const kPink = Color(0xFFF02FE9);
+const kPurple = Color(0xFF6A4BEF);
+const kPink = Color(0xFFAA54DA);
 const kRed = Color(0xFFFB6862);
 
 const kGrey = Color(0xFFC1C7C9);

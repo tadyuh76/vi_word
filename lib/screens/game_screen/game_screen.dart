@@ -1,22 +1,23 @@
-import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vi_word/models/letter.dart';
 import 'package:vi_word/models/word.dart';
 import 'package:vi_word/screens/game_screen/app_bar.dart';
-import 'package:vi_word/services/audio_service.dart';
+import 'package:vi_word/services/cache_service.dart';
+// import 'package:vi_word/services/audio_service.dart';
 import 'package:vi_word/services/game_service.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/color_changer.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/constants.dart';
 import 'package:vi_word/utils/enums.dart';
+import 'package:vi_word/utils/hive_boxes.dart';
 import 'package:vi_word/utils/show_snack_bar.dart';
-import 'package:vi_word/widgets/accent_box.dart';
-import 'package:vi_word/widgets/board.dart';
+import 'package:vi_word/widgets/dialogs/end_dialog.dart';
 import 'package:vi_word/widgets/dialogs/tutorial_dialog.dart';
-import 'package:vi_word/widgets/dialogs/won_dialog.dart';
-import 'package:vi_word/widgets/keyboard.dart';
+import 'package:vi_word/widgets/game/accent_box.dart';
+import 'package:vi_word/widgets/game/board.dart';
+import 'package:vi_word/widgets/keyboard/keyboard.dart';
 import 'package:vi_word/widgets/screen_background.dart';
 
 class GameScreen extends StatefulWidget {
@@ -28,38 +29,71 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  final List<List<FlipCardController>> _flipCardControllers =
-      GameService().initFlipCardControllers;
+  Box<dynamic> gameDataCacheBox = Hive.box(HiveBoxes.gameData);
+  final _flipCardControllers = GameService().initFlipCardControllers;
   final _gameService = GameService();
-  final _audioService = AudioService();
+  final _cacheService = CacheService();
+  // final _audioService = AudioService();
 
+  List<Word> _board = [];
+  int _currentIndex = 0;
+  String _solution = '';
+  GameStatus _gameStatus = GameStatus.playing;
+  List<Letter> specialKeys = [];
+
+  bool accentBoxVisible = false;
   Word? get _currentWord =>
       _currentIndex < _board.length ? _board[_currentIndex] : null;
-
-  int _currentIndex = 0;
-  GameStatus _gameStatus = GameStatus.playing;
-  bool accentBoxVisible = false;
-
-  late List<Word> _board;
-  late String _solution;
-  late Set<Letter> specialKeys;
 
   @override
   void initState() {
     super.initState();
-
-    createNewGame();
-    checkAlreadyPlayed();
   }
 
-  Future<void> checkAlreadyPlayed() async {
-    try {
-      final box = Hive.box('gameData');
-      final alreadyPlayed = await box.get('alreadyPlayed');
-      if (alreadyPlayed == true) return;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-      showDialog(context: context, builder: (_) => const TutorialDialog());
-      box.put('alreadyPlayed', true);
+    checkAlreadyPlayed();
+    initGame();
+  }
+
+  void initGame() {
+    try {
+      _board = gameDataCacheBox
+          .get('board', defaultValue: GameService().initBoard)
+          .cast<Word>();
+      _currentIndex = gameDataCacheBox.get('currentIndex', defaultValue: 0);
+      _gameStatus =
+          gameDataCacheBox.get('gameStatus', defaultValue: GameStatus.playing);
+      _solution = gameDataCacheBox.get('solution',
+          defaultValue: GameService().getWordOfTheDay());
+      specialKeys =
+          gameDataCacheBox.get('specialKeys', defaultValue: []).cast<Letter>();
+
+      for (int i = 0; i < _currentIndex; i++) {
+        _gameService.flipWordRow(_flipCardControllers[i]);
+      }
+    } catch (e) {
+      print('Error initializing game: $e');
+    }
+  }
+
+  void checkAlreadyPlayed() async {
+    try {
+      // Why I have to open this box which was already opened ??
+      await Hive.openBox(HiveBoxes.gameData);
+
+      final alreadyPlayed =
+          gameDataCacheBox.get('alreadyPlayed', defaultValue: false);
+      if (alreadyPlayed) return;
+
+      showDialog(
+        context: context,
+        builder: (context) => const TutorialDialog(),
+      );
+      gameDataCacheBox.put('alreadyPlayed', true);
+      // box.close();
     } catch (e) {
       debugPrint('error checking alreadyPlayed: ${e.toString()}');
     }
@@ -76,7 +110,7 @@ class _GameScreenState extends State<GameScreen> {
       }
     });
 
-    _audioService.playSound(Sound.tapped);
+    // _audioService.playSound(Sound.tapped);
   }
 
   void onLimitedKeyTap(String key) {
@@ -88,7 +122,7 @@ class _GameScreenState extends State<GameScreen> {
       text: 'Chữ "$key" không có trong Tiếng Việt !',
     );
 
-    _audioService.playSound(Sound.tapped);
+    // _audioService.playSound(Sound.tapped);
   }
 
   void onAccentTap(String valWithAccent) {
@@ -98,7 +132,7 @@ class _GameScreenState extends State<GameScreen> {
         ..addLetter(valWithAccent);
     });
 
-    _audioService.playSound(Sound.tapped);
+    // _audioService.playSound(Sound.tapped);
   }
 
   void onDeleteTap() {
@@ -106,7 +140,7 @@ class _GameScreenState extends State<GameScreen> {
 
     setState(() => _currentWord?.removeLetter());
 
-    _audioService.playSound(Sound.tapped);
+    // _audioService.playSound(Sound.tapped);
   }
 
   Future<void> onEnterTap() async {
@@ -136,11 +170,13 @@ class _GameScreenState extends State<GameScreen> {
 
     if (isCorrect) {
       Future.delayed(
-        const Duration(milliseconds: 1200),
+        const Duration(milliseconds: 1500),
         () => showDialog(
           context: context,
-          builder: (context) => WonDialog(
+          builder: (context) => EndDialog(
             createNewGame: () => createNewGame(context),
+            solution: _solution,
+            guesses: _currentIndex,
           ),
         ),
       );
@@ -158,12 +194,16 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     _gameService.updateKeyboard(_currentWord!, specialKeys);
-    _gameService.flipCards(
-      _currentWord!,
-      _flipCardControllers[_currentIndex++],
+    _gameService.flipWordRow(_flipCardControllers[_currentIndex++]);
+    _cacheService.cacheGameData(
+      board: _board,
+      solution: _solution,
+      currentIndex: _currentIndex,
+      gameStatus: _gameStatus,
+      specialKeys: specialKeys,
     );
 
-    _audioService.playSound(Sound.flipCards);
+    // _audioService.playSound(Sound.flipCards);
     setState(() {});
   }
 
@@ -172,7 +212,7 @@ class _GameScreenState extends State<GameScreen> {
     _solution = _gameService.getWordOfTheDay();
     _currentIndex = 0;
     _gameStatus = GameStatus.playing;
-    specialKeys = {};
+    specialKeys = [];
 
     for (final row in _flipCardControllers) {
       for (final controller in row) {
@@ -183,7 +223,7 @@ class _GameScreenState extends State<GameScreen> {
     if (context != null) {
       showSnackBar(
         context: context,
-        backgroundColor: darken(kSecondary, 0.05),
+        backgroundColor: darken(kWrongAccentColor, 0.05),
         text: 'Đã khởi tạo từ mới',
       );
     }
@@ -197,8 +237,7 @@ class _GameScreenState extends State<GameScreen> {
         _currentWord != null ? _currentWord!.lastLetter : Letter.empty();
 
     return GestureDetector(
-      onTap: () => Future.delayed(const Duration(milliseconds: 400),
-          () => setState(() => accentBoxVisible = false)),
+      onTap: () => setState(() => accentBoxVisible = false),
       child: Scaffold(
         appBar: renderAppBar(context, createNewGame),
         body: ScreenBackground(

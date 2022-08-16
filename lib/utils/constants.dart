@@ -1,6 +1,7 @@
-const String appName = 'ViWordle';
+const appName = 'ViWordle';
+const numberOfGuess = 7;
+const kDefaultFont = 'Quicksand';
 
-// game constants
 const enterKey = 'enter';
 const delKey = 'del';
 const keyRows = [
@@ -9,7 +10,7 @@ const keyRows = [
   [delKey, 'z', 'x', 'c', 'v', 'b', 'n', 'm', enterKey],
 ];
 
-final Map<String, List<List<String>>> keyWithAccents = {
+const keyWithAccents = {
   'a': [
     ['', 'á', 'à', 'ả', 'ã', 'ạ'],
     ['â', 'ấ', 'ầ', 'ẩ', 'ẫ', 'ậ'],

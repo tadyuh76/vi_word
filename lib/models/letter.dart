@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:vi_word/utils/colors.dart';
 import 'package:vi_word/utils/enums.dart';
 
+part 'letter.g.dart';
+
+@HiveType(typeId: 0)
 class Letter {
+  @HiveField(0)
   String val;
+  @HiveField(1)
   LetterStatus status;
 
   Letter({required this.val, this.status = LetterStatus.initial});
@@ -13,11 +19,11 @@ class Letter {
   Color get backgroundColor {
     switch (status) {
       case LetterStatus.correct:
-        return kPrimary.withAlpha(220);
+        return kCorrectColor.withAlpha(220);
       case LetterStatus.wrongAccent:
-        return kSecondary.withAlpha(220);
+        return kWrongAccentColor.withAlpha(220);
       case LetterStatus.wrongPosition:
-        return kTernary.withAlpha(220);
+        return kWrongPositionColor.withAlpha(220);
       case LetterStatus.notInWord:
         return kMediumGrey;
       case LetterStatus.initial:
@@ -30,11 +36,11 @@ class Letter {
   Color get borderColor {
     switch (status) {
       case LetterStatus.correct:
-        return kPrimary;
+        return kCorrectColor;
       case LetterStatus.wrongAccent:
-        return kSecondary;
+        return kWrongAccentColor;
       case LetterStatus.wrongPosition:
-        return kTernary;
+        return kWrongPositionColor;
       default:
         return kMediumGrey;
     }
@@ -45,10 +51,5 @@ class Letter {
     this.status = status ?? this.status;
 
     return this;
-  }
-
-  @override
-  String toString() {
-    return "($val, $status)";
   }
 }

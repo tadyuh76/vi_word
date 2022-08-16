@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:vi_word/screens/home_screen/home_screen.dart';
 import 'package:vi_word/utils/colors.dart';
-import 'package:vi_word/utils/constants.dart' as constants;
+import 'package:vi_word/utils/constants.dart';
 import 'package:vi_word/widgets/dialogs/exit_dialog.dart';
 import 'package:vi_word/widgets/dialogs/tutorial_dialog.dart';
 
@@ -11,19 +11,18 @@ AppBar renderAppBar(
   void Function(BuildContext) createNewGame,
 ) {
   return AppBar(
-    backgroundColor: kBackground.withOpacity(0.8),
+    backgroundColor: kBackground,
     elevation: 3,
     centerTitle: true,
-    title: const Text(constants.appName),
+    title: const Text(appName),
     titleTextStyle: const TextStyle(
-      letterSpacing: 4,
       fontSize: 28,
-      color: kSecondary,
-      fontWeight: FontWeight.bold,
       fontFamily: 'Quicksand',
+      color: kPurple,
+      fontWeight: FontWeight.bold,
       shadows: [
         Shadow(
-          color: kSecondary,
+          color: kPurple,
           blurRadius: 4,
         )
       ],

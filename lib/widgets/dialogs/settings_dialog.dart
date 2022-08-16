@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:vi_word/utils/breakpoints.dart';
 import 'package:vi_word/utils/colors.dart';
-import 'package:vi_word/widgets/custom_close_button.dart';
-import 'package:vi_word/widgets/custom_switch.dart';
+import 'package:vi_word/widgets/dialogs/custom_close_button.dart';
+import 'package:vi_word/widgets/dialogs/custom_switch.dart';
 
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({Key? key}) : super(key: key);
@@ -11,6 +11,7 @@ class SettingsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: const EdgeInsets.all(kDefaultPadding),
       alignment: Alignment.center,
       backgroundColor: Colors.transparent,
       child: ConstrainedBox(
@@ -53,7 +54,7 @@ class SettingsDialog extends StatelessWidget {
               _SettingsItem(
                 text: 'NHẠC NỀN',
                 onTap: (active) {
-                  print("nhạc nền: $active");
+                  debugPrint("nhạc nền: $active");
                 },
               ),
               const Divider(
@@ -63,7 +64,7 @@ class SettingsDialog extends StatelessWidget {
               _SettingsItem(
                 text: 'HIỆU ỨNG ÂM THANH',
                 onTap: (active) {
-                  print("sfx: $active");
+                  debugPrint("sfx: $active");
                 },
               ),
             ],
